@@ -21,15 +21,6 @@ export const DonorRequestDetail: React.FC = () => {
     if (!requestId) return;
     setLoading(true);
     try {
-<<<<<<< HEAD
-      const req = await api.getBloodRequestById(requestId);
-      if (req) {
-        setRequest(req);
-        const resp = await api.getOrCreateResponseForDonor(requestId);
-        setResponse(resp);
-      } else {
-        setToast({ message: 'Request details could not be found.', type: 'error' });
-=======
       const donorNotifications = await api.getDonorNotifications();
       // Backend returns joined data: each notification has bloodRequests (joined) and flat fields
       const match = donorNotifications.find((n: any) => {
@@ -87,7 +78,6 @@ export const DonorRequestDetail: React.FC = () => {
         } else {
           setToast({ message: 'Request not found', type: 'error' });
         }
->>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
       }
     } catch (err) {
       console.error(err);
@@ -131,8 +121,6 @@ export const DonorRequestDetail: React.FC = () => {
     }
   };
 
-<<<<<<< HEAD
-=======
   const handleUpdateStatus = async (status: 'en_route' | 'arrived') => {
     if (!response) return;
     setActionLoading(true);
@@ -156,8 +144,6 @@ export const DonorRequestDetail: React.FC = () => {
     if (!response || !requestId) return;
     setToast({ message: 'Waiting for hospital staff to verify your donation...', type: 'info' });
   };
-
->>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fcf9f8] flex items-center justify-center max-w-md mx-auto border-x border-[#eae7e7]">

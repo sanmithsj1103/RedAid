@@ -32,10 +32,6 @@ export const DonorDashboard: React.FC = () => {
       setDonor(profile);
 
       const notifications = await api.getDonorNotifications();
-<<<<<<< HEAD
-      // Filter responses that are 'notified' to show as active alerts
-      const activeAlerts = notifications.filter(n => n.response.status === 'notified');
-=======
       // Backend returns donation_response rows with joined bloodRequests
       // Transform into { response, request } shape for the template
       const transformed = (notifications || []).map((n: any) => {
@@ -60,7 +56,6 @@ export const DonorDashboard: React.FC = () => {
         };
       });
       const activeAlerts = transformed.filter((n: any) => n.response.status === 'notified');
->>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
       setAlerts(activeAlerts);
     } catch (err) {
       console.error('Failed to load dashboard data', err);

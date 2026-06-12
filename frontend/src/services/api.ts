@@ -116,161 +116,6 @@ export interface AuditLog {
   createdAt: string;
 }
 
-<<<<<<< HEAD
-// --- Initial Mock Data ---
-const INITIAL_DONORS: Donor[] = [
-  {
-    id: 'donor_julianne',
-    fullName: 'Julianne Dorsey',
-    phone: '+919876543220',
-    dateOfBirth: '1997-04-12',
-    bloodGroup: 'O+',
-    location: { lat: 12.9812, lng: 77.7320, city: 'Bengaluru', address: 'Hope Farm, Bengaluru' },
-    availability: 'active',
-    snoozeUntil: null,
-    lastDonatedAt: '2023-10-12T12:00:00Z',
-    trustScore: 98,
-    totalDonations: 14,
-    totalResponses: 15,
-    totalAccepted: 14,
-    badges: ['lifesaver', 'veteran'],
-    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-  },
-  {
-    id: 'donor_marcus',
-    fullName: 'Marcus Kinsley',
-    phone: '+919876543221',
-    dateOfBirth: '1993-02-14',
-    bloodGroup: 'AB-',
-    location: { lat: 12.9242, lng: 77.7121, city: 'Bengaluru', address: 'Bellandur, Bengaluru' },
-    availability: 'snoozed',
-    snoozeUntil: '2026-07-20T18:00:00Z',
-    lastDonatedAt: '2023-11-22T12:00:00Z',
-    trustScore: 85,
-    totalDonations: 8,
-    totalResponses: 10,
-    totalAccepted: 8,
-    badges: ['veteran'],
-    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-  },
-  {
-    id: 'donor_sarah_r',
-    fullName: 'Sarah Richardson',
-    phone: '+919876543222',
-    dateOfBirth: '1994-09-08',
-    bloodGroup: 'A-',
-    location: { lat: 12.9620, lng: 77.7580, city: 'Bengaluru', address: 'Channasandra, Bengaluru' },
-    availability: 'active',
-    snoozeUntil: null,
-    lastDonatedAt: '2023-12-05T12:00:00Z',
-    trustScore: 92,
-    totalDonations: 21,
-    totalResponses: 25,
-    totalAccepted: 21,
-    badges: ['lifesaver', 'veteran', 'streak_5'],
-    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-  },
-  {
-    id: 'donor_thomas',
-    fullName: 'Thomas Bennington',
-    phone: '+919876543223',
-    dateOfBirth: '1989-10-10',
-    bloodGroup: 'B+',
-    location: { lat: 12.8710, lng: 77.6840, city: 'Bengaluru', address: 'Electronic City, Bengaluru' },
-    availability: 'unavailable',
-    snoozeUntil: null,
-    lastDonatedAt: '2023-09-15T12:00:00Z',
-    trustScore: 72,
-    totalDonations: 5,
-    totalResponses: 8,
-    totalAccepted: 5,
-    badges: ['veteran'],
-    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-  },
-  {
-    id: 'donor_anita',
-    fullName: 'Anita Lowman',
-    phone: '+919876543224',
-    dateOfBirth: '1991-05-15',
-    bloodGroup: 'O-',
-    location: { lat: 12.9412, lng: 77.7210, city: 'Bengaluru', address: 'Marathahalli, Bengaluru' },
-    availability: 'active',
-    snoozeUntil: null,
-    lastDonatedAt: '2024-01-18T12:00:00Z',
-    trustScore: 100,
-    totalDonations: 32,
-    totalResponses: 32,
-    totalAccepted: 32,
-    badges: ['lifesaver', 'veteran', 'streak_5'],
-    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-  },
-  {
-    id: 'donor_adrian',
-    fullName: 'Adrian Sterling',
-    phone: '+919876543225',
-    dateOfBirth: '1996-07-20',
-    bloodGroup: 'O-',
-    location: { lat: 12.9512, lng: 77.7310, city: 'Bengaluru', address: 'Brookefield, Bengaluru' },
-    availability: 'active',
-    snoozeUntil: null,
-    lastDonatedAt: '2023-10-12T12:00:00Z',
-    trustScore: 98,
-    totalDonations: 10,
-    totalResponses: 11,
-    totalAccepted: 10,
-    badges: ['lifesaver', 'streak_3'],
-    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-  },
-  {
-    id: 'donor_1',
-    fullName: 'Arjun Sharma',
-    phone: '+919876543210',
-    dateOfBirth: '1998-05-12',
-    bloodGroup: 'O+',
-    location: { lat: 12.9716, lng: 77.5946, city: 'Bengaluru', address: 'Indiranagar, Bengaluru' },
-    availability: 'active',
-    snoozeUntil: null,
-    lastDonatedAt: '2026-02-15T10:00:00Z',
-    trustScore: 98.5,
-    totalDonations: 4,
-    totalResponses: 10,
-    totalAccepted: 4,
-    badges: ['first_donation', 'streak_3', 'lifesaver'],
-    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-  },
-  {
-    id: 'donor_samuel',
-    fullName: 'Samuel Richardson',
-    phone: '+1 (555) 012-3456',
-    dateOfBirth: '2000-01-01',
-    bloodGroup: 'O+',
-    location: { lat: 28.6139, lng: 77.2090, city: 'New Delhi', address: 'Sector 12, New Delhi' },
-    availability: 'active',
-    snoozeUntil: null,
-    lastDonatedAt: '2023-10-24T12:00:00Z',
-    trustScore: 85,
-    totalDonations: 12,
-    totalResponses: 15,
-    totalAccepted: 12,
-    badges: ['lifesaver', 'veteran', 'streak_3', 'first_donation', 'gold_donor'],
-    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-=======
 // ─── Utility: snake_case ↔ camelCase ─────────────────────
 
 function snakeToCamel(str: string): string {
@@ -288,7 +133,6 @@ function convertKeysToCamel(obj: any): any {
       acc[snakeToCamel(key)] = convertKeysToCamel(val);
       return acc;
     }, {} as Record<string, any>);
->>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
   }
   return obj;
 }
@@ -398,82 +242,6 @@ class ApiService {
   private refreshQueue: Array<{ resolve: (token: string) => void; reject: (err: any) => void }> = [];
 
   constructor() {
-<<<<<<< HEAD
-    let loadedDonors = loadData('donors', INITIAL_DONORS);
-    if (!loadedDonors.some(d => d.fullName === 'Samuel Richardson')) {
-      localStorage.removeItem('redaid_donors');
-      localStorage.removeItem('redaid_hospitals');
-      localStorage.removeItem('redaid_requests');
-      localStorage.removeItem('redaid_responses');
-      localStorage.removeItem('redaid_inventory');
-      localStorage.removeItem('redaid_surplus');
-      localStorage.removeItem('redaid_audit_logs');
-      localStorage.removeItem('redaid_active_user');
-      loadedDonors = INITIAL_DONORS;
-    }
-    this.donors = loadedDonors;
-    this.hospitals = loadData('hospitals', INITIAL_HOSPITALS);
-    this.requests = loadData('requests', INITIAL_REQUESTS);
-    this.responses = loadData('responses', INITIAL_RESPONSES);
-    this.inventory = loadData('inventory', INITIAL_INVENTORY);
-    this.surplus = loadData('surplus', INITIAL_SURPLUS);
-    this.auditLogs = loadData('audit_logs', []);
-    this.activeUser = loadData('active_user', { id: 'donor_samuel', role: 'donor' }); // Default active user to donor_samuel for testing donor portal
-  }
-
-  private persist() {
-    saveData('donors', this.donors);
-    saveData('hospitals', this.hospitals);
-    saveData('requests', this.requests);
-    saveData('responses', this.responses);
-    saveData('inventory', this.inventory);
-    saveData('surplus', this.surplus);
-    saveData('audit_logs', this.auditLogs);
-    saveData('active_user', this.activeUser);
-  }
-
-  private delay<T>(value: T): Promise<T> {
-    return new Promise((resolve) => setTimeout(() => resolve(value), 500));
-  }
-
-  private log(action: string, entityType: string, entityId: string, metadata: any = {}) {
-    const log: AuditLog = {
-      id: `log_${Math.random().toString(36).substr(2, 9)}`,
-      actorId: this.activeUser?.id,
-      actorRole: this.activeUser?.role || 'system',
-      action,
-      entityType,
-      entityId,
-      metadata,
-      createdAt: new Date().toISOString(),
-    };
-    this.auditLogs.unshift(log);
-    this.persist();
-  }
-
-  // --- Session Methods ---
-  getActiveUser() {
-    return this.delay(this.activeUser);
-  }
-
-  login(phone: string, role: 'donor' | 'hospital' | 'admin') {
-    if (role === 'admin') {
-      this.activeUser = { id: 'admin_1', role: 'admin' };
-      this.log('auth.login', 'admin', 'admin_1');
-      this.persist();
-      return this.delay({ success: true, user: this.activeUser });
-    }
-
-    if (role === 'donor') {
-      const cleanPhoneInput = phone.replace(/\D/g, '');
-      const donor = this.donors.find(d => d.phone.replace(/\D/g, '') === cleanPhoneInput);
-      if (donor) {
-        if (donor.isBlacklisted) throw new Error('Your account has been blacklisted.');
-        this.activeUser = { id: donor.id, role: 'donor' };
-        this.log('auth.login', 'donor', donor.id);
-        this.persist();
-        return this.delay({ success: true, user: this.activeUser, profile: donor });
-=======
     // Restore session from sessionStorage
     const saved = sessionStorage.getItem('redaid_session');
     if (saved) {
@@ -483,249 +251,21 @@ class ApiService {
         this.activeUser = parsed.activeUser || null;
       } catch {
         sessionStorage.removeItem('redaid_session');
->>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
       }
     }
   }
 
-<<<<<<< HEAD
-  logout() {
-    if (this.activeUser) {
-      this.log('auth.logout', this.activeUser.role, this.activeUser.id);
-    }
-    this.activeUser = null;
-    this.persist();
-    return this.delay({ success: true });
-  }
-
-  sendOtp(phone: string) {
-    console.log(`[OTP Engine] Generating OTP code for: ${phone}`);
-    return this.delay({ success: true, otpSent: true });
-  }
-
-  verifyOtp(phone: string, code: string) {
-    console.log(`[OTP Engine] Verified OTP code: ${code} for phone: ${phone}`);
-    return this.delay({ success: true });
-  }
-
-  // --- Registration Methods ---
-  registerDonor(data: Omit<Donor, 'id' | 'trustScore' | 'totalDonations' | 'totalResponses' | 'totalAccepted' | 'badges' | 'isVerified' | 'isBlacklisted' | 'lastDonatedAt' | 'snoozeUntil'>) {
-    const newDonor: Donor = {
-      ...data,
-      id: `donor_${Math.random().toString(36).substr(2, 9)}`,
-      trustScore: 100,
-      totalDonations: 0,
-      totalResponses: 0,
-      totalAccepted: 0,
-      badges: [],
-      lastDonatedAt: null,
-      snoozeUntil: null,
-      isVerified: true,
-      isBlacklisted: false,
-    };
-    this.donors.push(newDonor);
-    this.activeUser = { id: newDonor.id, role: 'donor' };
-    this.log('donor.register', 'donor', newDonor.id);
-    this.persist();
-    return this.delay({ success: true, user: this.activeUser, profile: newDonor });
-  }
-
-  registerHospital(data: Omit<Hospital, 'id' | 'isVerified' | 'isActive'>) {
-    const newHosp: Hospital = {
-      ...data,
-      id: `hospital_${Math.random().toString(36).substr(2, 9)}`,
-      isVerified: false, // requires admin verification
-      isActive: true,
-    };
-    this.hospitals.push(newHosp);
-    // Initialize empty inventory for new hospital
-    this.inventory[newHosp.id] = [
-      { bloodGroup: 'A+', unitsAvailable: 0, lowStockThreshold: 2 },
-      { bloodGroup: 'A-', unitsAvailable: 0, lowStockThreshold: 2 },
-      { bloodGroup: 'B+', unitsAvailable: 0, lowStockThreshold: 2 },
-      { bloodGroup: 'B-', unitsAvailable: 0, lowStockThreshold: 2 },
-      { bloodGroup: 'AB+', unitsAvailable: 0, lowStockThreshold: 2 },
-      { bloodGroup: 'AB-', unitsAvailable: 0, lowStockThreshold: 2 },
-      { bloodGroup: 'O+', unitsAvailable: 0, lowStockThreshold: 2 },
-      { bloodGroup: 'O-', unitsAvailable: 0, lowStockThreshold: 2 },
-    ];
-    this.activeUser = { id: newHosp.id, role: 'hospital' };
-    this.log('hospital.register', 'hospital', newHosp.id);
-    this.persist();
-    return this.delay({ success: true, user: this.activeUser, profile: newHosp });
-  }
-
-  // --- Donor Portal Methods ---
-  getDonorProfile(donorId?: string) {
-    const id = donorId || this.activeUser?.id;
-    const donor = this.donors.find(d => d.id === id);
-    if (!donor) throw new Error('Donor profile not found');
-    return this.delay(donor);
-  }
-
-  updateDonorProfile(fields: Partial<Donor>) {
-    if (!this.activeUser || this.activeUser.role !== 'donor') throw new Error('Unauthorized');
-    this.donors = this.donors.map(d => {
-      if (d.id === this.activeUser!.id) {
-        const updated = { ...d, ...fields };
-        this.log('donor.update_profile', 'donor', d.id, fields);
-        return updated;
-      }
-      return d;
-    });
-    this.persist();
-    return this.getDonorProfile();
-  }
-
-  setAvailability(status: AvailabilityStatus, snoozeUntil: string | null = null) {
-    if (!this.activeUser || this.activeUser.role !== 'donor') throw new Error('Unauthorized');
-    this.donors = this.donors.map(d => {
-      if (d.id === this.activeUser!.id) {
-        const updated = { ...d, availability: status, snoozeUntil };
-        this.log('donor.set_availability', 'donor', d.id, { status, snoozeUntil });
-        return updated;
-      }
-      return d;
-    });
-    this.persist();
-    return this.getDonorProfile();
-  }
-
-  getDonorActiveRequest() {
-    if (!this.activeUser || this.activeUser.role !== 'donor') throw new Error('Unauthorized');
-    // Find requests this donor has accepted and are not completed/cancelled
-    const response = this.responses.find(r => r.donorId === this.activeUser!.id && (r.status === 'accepted' || r.status === 'en_route' || r.status === 'arrived'));
-    if (!response) return this.delay(null);
-
-    const request = this.requests.find(req => req.id === response.requestId);
-    if (!request) return this.delay(null);
-
-    return this.delay({ response, request });
-  }
-
-  getDonorNotifications() {
-    if (!this.activeUser || this.activeUser.role !== 'donor') throw new Error('Unauthorized');
-    // Find all responses (notifications) for this donor
-    const list = this.responses.filter(r => r.donorId === this.activeUser!.id);
-    // Join with request details
-    const joined = list.map(resp => {
-      const request = this.requests.find(req => req.id === resp.requestId);
-      return { response: resp, request };
-    }).sort((a, b) => new Date(b.response.notifiedAt).getTime() - new Date(a.response.notifiedAt).getTime());
-
-    return this.delay(joined);
-  }
-
-  getBloodRequestById(requestId: string) {
-    const request = this.requests.find(r => r.id === requestId);
-    return this.delay(request || null);
-  }
-
-  getOrCreateResponseForDonor(requestId: string) {
-    if (!this.activeUser || this.activeUser.role !== 'donor') throw new Error('Unauthorized');
-    const donor = this.donors.find(d => d.id === this.activeUser!.id);
-    if (!donor) throw new Error('Donor profile not found');
-
-    let response = this.responses.find(r => r.requestId === requestId && r.donorId === donor.id);
-    if (!response) {
-      response = {
-        id: `resp_sim_${requestId}`,
-        requestId: requestId,
-        donorId: donor.id,
-        donorName: donor.fullName,
-        donorPhone: donor.phone,
-        donorBloodGroup: donor.bloodGroup,
-        donorTrustScore: donor.trustScore,
-        status: 'notified',
-        notifiedAt: new Date().toISOString()
-      };
-      this.responses.push(response);
-      this.persist();
-    }
-    return this.delay(response);
-  }
-
-  respondToRequest(responseId: string, action: 'accept' | 'decline') {
-    if (!this.activeUser || this.activeUser.role !== 'donor') throw new Error('Unauthorized');
-    const status: ResponseStatus = action === 'accept' ? 'accepted' : 'declined';
-    
-    this.responses = this.responses.map(r => {
-      if (r.id === responseId) {
-        const updated = { ...r, status, respondedAt: new Date().toISOString() };
-        this.log(`donor.respond_${action}`, 'donation_responses', r.id);
-        
-        // If accepted, update the request statistics
-        if (action === 'accept') {
-          this.requests = this.requests.map(req => {
-            if (req.id === r.requestId) {
-              return { ...req, status: 'accepted' as RequestStatus, donorsAccepted: req.donorsAccepted + 1 };
-            }
-            return req;
-          });
-        }
-        return updated;
-      }
-      return r;
-    });
-
-    // Update donor stats if accepted
-    if (action === 'accept') {
-      this.donors = this.donors.map(d => {
-        if (d.id === this.activeUser!.id) {
-          return { ...d, totalAccepted: d.totalAccepted + 1, totalResponses: d.totalResponses + 1 };
-        }
-        return d;
-      });
-=======
   private persistSession() {
     if (this.accessToken && this.activeUser) {
       sessionStorage.setItem('redaid_session', JSON.stringify({
         accessToken: this.accessToken,
         activeUser: this.activeUser,
       }));
->>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
     } else {
       sessionStorage.removeItem('redaid_session');
     }
   }
 
-<<<<<<< HEAD
-  updateDonorResponseStatus(responseId: string, status: 'en_route' | 'arrived' | 'donated') {
-    this.responses = this.responses.map(r => {
-      if (r.id === responseId) {
-        let timeKey = 'respondedAt';
-        if (status === 'arrived') timeKey = 'arrivedAt';
-        if (status === 'donated') timeKey = 'donatedAt';
-
-        const updated = { ...r, status: status as ResponseStatus, [timeKey]: new Date().toISOString() };
-        this.log(`donor.status_${status}`, 'donation_responses', r.id);
-
-        // Update central request status as well
-        this.requests = this.requests.map(req => {
-          if (req.id === r.requestId) {
-            const nextStatus = status === 'donated' ? 'completed' : status;
-            const nextFulfilled = status === 'donated' ? Math.min(req.unitsRequired, req.unitsFulfilled + 1) : req.unitsFulfilled;
-            return { ...req, status: nextStatus as RequestStatus, unitsFulfilled: nextFulfilled };
-          }
-          return req;
-        });
-
-        // Update donor stats if completed
-        if (status === 'donated') {
-          this.donors = this.donors.map(d => {
-            if (d.id === r.donorId) {
-              return {
-                ...d,
-                totalDonations: d.totalDonations + 1,
-                lastDonatedAt: new Date().toISOString()
-              };
-            }
-            return d;
-          });
-        }
-
-        return updated;
-=======
   // ─── Core HTTP Method ──────────────────────────────────
 
   private async request<T>(
@@ -766,12 +306,12 @@ class ApiService {
 
         if (!retryRes.ok) {
           const errData = await retryRes.json().catch(() => ({}));
-          throw new Error(errData.message || errData.error || `Request failed: ${retryRes.status}`);
+          const errMsg = errData.error?.message || errData.message || (typeof errData.error === 'string' ? errData.error : null) || `Request failed: ${retryRes.status}`;
+          throw new Error(errMsg);
         }
 
         const retryJson = await retryRes.json();
         return options.rawResponse ? retryJson : convertKeysToCamel(retryJson);
->>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
       }
       // Refresh failed — clear session
       this.accessToken = null;
