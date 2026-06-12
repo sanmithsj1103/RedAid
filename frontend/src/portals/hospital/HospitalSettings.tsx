@@ -66,6 +66,7 @@ export const HospitalSettings: React.FC = () => {
         email
       });
       setHospital(updated);
+      window.dispatchEvent(new Event('hospital-profile-updated'));
       alert('Changes saved successfully! Dynamic header name has been updated.');
     } catch (err) {
       console.error(err);

@@ -35,6 +35,11 @@ export const HospitalLayout: React.FC<HospitalLayoutProps> = ({
       }
     };
     fetchProfile();
+
+    window.addEventListener('hospital-profile-updated', fetchProfile);
+    return () => {
+      window.removeEventListener('hospital-profile-updated', fetchProfile);
+    };
   }, [navigate]);
 
   const handleLogout = async () => {
@@ -97,25 +102,18 @@ export const HospitalLayout: React.FC<HospitalLayoutProps> = ({
   const getHeaderProfileInfo = () => {
     if (!hospital) return { name: "Dr. Sarah Mitchell", role: "HOSPITAL ADMIN", avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150" };
     
+    let avatar = "https://images.unsplash.com/photo-1594824813573-246434de83fb?auto=format&fit=crop&q=80&w=150";
     if (hospital.id === 'hospital_1') {
-      return {
-        name: "Dr. Sarah Mitchell",
-        role: "HOSPITAL ADMIN",
-        avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150"
-      };
+      avatar = "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150";
     } else if (hospital.id === 'hospital_2') {
-      return {
-        name: "St. Jude Medical",
-        role: "ADMIN LEVEL 4",
-        avatar: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=150"
-      };
-    } else {
-      return {
-        name: "Dr. Sarah Jenkins",
-        role: "CHIEF ADMINISTRATOR",
-        avatar: "https://images.unsplash.com/photo-1594824813573-246434de83fb?auto=format&fit=crop&q=80&w=150"
-      };
+      avatar = "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=150";
     }
+
+    return {
+      name: hospital.name,
+      role: hospital.id === 'hospital_1' ? "HOSPITAL ADMIN" : "ADMINISTRATOR",
+      avatar
+    };
   };
 
   const profile = getHeaderProfileInfo();

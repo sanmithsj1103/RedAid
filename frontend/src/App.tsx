@@ -13,6 +13,7 @@ import { DonorProfileSettings } from './portals/donor/ProfileSettings';
 
 // Hospital Portal Screens
 import { HospitalLogin } from './portals/hospital/Login';
+import { HospitalRegister } from './portals/hospital/Register';
 import { HospitalDashboard } from './portals/hospital/HospitalDashboard';
 import { CreateRequest } from './portals/hospital/CreateRequest';
 import { RequestsList } from './portals/hospital/RequestsList';
@@ -51,6 +52,7 @@ const App: React.FC = () => {
         {/* Hospital Routes */}
         <Route path="/hospital" element={<HospitalDashboard />} />
         <Route path="/hospital/login" element={<HospitalLogin />} />
+        <Route path="/hospital/register" element={<HospitalRegister />} />
         <Route path="/hospital/create" element={<CreateRequest />} />
         <Route path="/hospital/requests" element={<RequestsList />} />
         <Route path="/hospital/request/:requestId" element={<RequestTracker />} />
