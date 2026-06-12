@@ -321,7 +321,8 @@ class ApiService {
 
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || errData.error || `Request failed: ${res.status}`);
+      const errMsg = errData.error?.message || errData.message || (typeof errData.error === 'string' ? errData.error : null) || `Request failed: ${res.status}`;
+      throw new Error(errMsg);
     }
 
     const json = await res.json();
