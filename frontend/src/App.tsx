@@ -10,6 +10,12 @@ import { DonorRequestDetail } from './portals/donor/RequestDetail';
 import { DonationHistory } from './portals/donor/DonationHistory';
 import { CertificateViewer } from './portals/donor/CertificateViewer';
 import { DonorProfileSettings } from './portals/donor/ProfileSettings';
+import { DonorDonate } from './portals/donor/Donate';
+import { DonorMap } from './portals/donor/MapSection';
+import { DonorProfile } from './portals/donor/Profile';
+import { DonorGuide } from './portals/donor/DonationGuide';
+import { DonorNotifications } from './portals/donor/DonorNotifications';
+import { DonorNavigation } from './portals/donor/DonorNavigation';
 
 // Hospital Portal Screens
 import { HospitalLogin } from './portals/hospital/Login';
@@ -48,6 +54,12 @@ const App: React.FC = () => {
         <Route path="/donor/history" element={<DonationHistory />} />
         <Route path="/donor/certificate/:responseId" element={<CertificateViewer />} />
         <Route path="/donor/settings" element={<DonorProfileSettings />} />
+        <Route path="/donor/donate" element={<DonorDonate />} />
+        <Route path="/donor/map" element={<DonorMap />} />
+        <Route path="/donor/profile" element={<DonorProfile />} />
+        <Route path="/donor/guide" element={<DonorGuide />} />
+        <Route path="/donor/notifications" element={<DonorNotifications />} />
+        <Route path="/donor/navigation/:requestId" element={<DonorNavigation />} />
 
         {/* Hospital Routes */}
         <Route path="/hospital" element={<HospitalDashboard />} />

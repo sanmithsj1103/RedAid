@@ -1,15 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Shield, Award, Calendar, Bell, Settings, LogOut, CheckCircle, Power, Zap, MapPin } from 'lucide-react';
-import { api, Donor, AvailabilityStatus } from '../../services/api';
+import { 
+  Menu, 
+  Bell, 
+  ChevronRight, 
+  Home, 
+  Map as MapIcon, 
+  Calendar, 
+  User, 
+  X, 
+  BookOpen,
+  LayoutDashboard
+} from 'lucide-react';
+import { api, Donor, BloodRequest } from '../../services/api';
 
 export const DonorDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [donor, setDonor] = useState<Donor | null>(null);
   const [alerts, setAlerts] = useState<any[]>([]);
-  const [activeRequest, setActiveRequest] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [snoozeOpen, setSnoozeOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -22,12 +32,9 @@ export const DonorDashboard: React.FC = () => {
       setDonor(profile);
 
       const notifications = await api.getDonorNotifications();
-      // Filter responses that are 'notified' or 'accepted' to show as active alerts
+      // Filter responses that are 'notified' to show as active alerts
       const activeAlerts = notifications.filter(n => n.response.status === 'notified');
       setAlerts(activeAlerts);
-
-      const active = await api.getDonorActiveRequest();
-      setActiveRequest(active);
     } catch (err) {
       console.error('Failed to load dashboard data', err);
       navigate('/donor/login');
@@ -36,271 +43,313 @@ export const DonorDashboard: React.FC = () => {
     }
   };
 
-  const handleToggleAvailability = async (status: AvailabilityStatus, snoozeHours?: number) => {
-    let snoozeUntil: string | null = null;
-    if (status === 'snoozed' && snoozeHours) {
-      snoozeUntil = new Date(Date.now() + snoozeHours * 60 * 60 * 1000).toISOString();
-    }
-    
-    try {
-      const updated = await api.setAvailability(status, snoozeUntil);
-      setDonor(updated);
-      setSnoozeOpen(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleLogout = async () => {
-    await api.logout();
-    navigate('/');
-  };
-
   if (loading || !donor) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center max-w-md mx-auto">
+      <div className="min-h-screen bg-[#fcf9f8] flex items-center justify-center max-w-md mx-auto">
         <div className="text-center">
-          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Loading Dashboard...</p>
+          <div className="w-10 h-10 border-4 border-[#ba1a1a] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Loading Dashboard...</p>
         </div>
       </div>
     );
   }
 
-  // Determine availability styling
-  const statusConfig = {
-    active: { bg: 'bg-green-50 text-green-700 border-green-200', text: 'Active & Available', dot: 'bg-green-500' },
-    snoozed: { bg: 'bg-amber-50 text-amber-700 border-amber-200', text: 'Snoozed', dot: 'bg-amber-500' },
-    unavailable: { bg: 'bg-slate-100 text-slate-700 border-slate-200', text: 'Unavailable', dot: 'bg-slate-400' },
-  }[donor.availability];
+  // Calculate dynamic donation stats
+  const lastDonatedDate = donor.lastDonatedAt ? new Date(donor.lastDonatedAt) : null;
+  const daysSinceLast = lastDonatedDate 
+    ? Math.floor((Date.now() - lastDonatedDate.getTime()) / (1000 * 60 * 60 * 24)) 
+    : 120; // Default to 120 if never donated
+  const daysRemaining = Math.max(0, 90 - daysSinceLast);
+  const progressPercent = Math.min(100, Math.floor((daysSinceLast / 90) * 100));
+  const isEligible = daysRemaining === 0;
+
+  // Static mock nearby requests matching Dash.png
+  const nearbyRequests = [
+    {
+      id: 'req_apollo',
+      hospitalName: 'Apollo Clinic',
+      distance: '3.1 km',
+      units: '2 units',
+      time: '5m ago',
+      bloodGroup: 'A-',
+      priority: 'Urgent',
+      borderClass: 'border-l-red-500',
+      bgClass: 'bg-red-50/40 text-red-700'
+    },
+    {
+      id: 'req_st_mary',
+      hospitalName: "St. Mary's Hospital",
+      distance: '5.8 km',
+      units: '1 unit',
+      time: '18m ago',
+      bloodGroup: 'O+',
+      priority: 'Standard',
+      borderClass: 'border-l-orange-500',
+      bgClass: 'bg-orange-50/40 text-orange-700'
+    }
+  ];
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col justify-between max-w-md mx-auto relative border-x border-surface-container-high shadow-xl">
-      {/* Header */}
-      <header className="bg-white border-b border-surface-container-high p-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <Heart className="w-5 h-5 text-white fill-white animate-pulse" />
+    <div className="min-h-screen bg-[#fcf9f8] flex flex-col justify-between max-w-md mx-auto relative border-x border-[#eae7e7] shadow-xl overflow-x-hidden font-sans">
+      
+      {/* ================= LEFT SLIDER DRAWER (image 3) ================= */}
+      {menuOpen && (
+        <div className="absolute inset-0 bg-slate-900/60 z-50 transition-opacity flex">
+          {/* Drawer content */}
+          <div className="w-[75%] bg-white h-full p-5 flex flex-col space-y-6 shadow-2xl animate-slide-in relative">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-4">
+              <span className="text-base font-black text-[#ba1a1a] tracking-wider uppercase">REDAID MENU</span>
+              <button onClick={() => setMenuOpen(false)} className="text-slate-500 hover:text-slate-800">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <nav className="space-y-3 flex-1 pt-2">
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate('/donor/dashboard');
+                }}
+                className="w-full flex items-center gap-3.5 px-4 py-3 bg-[#ffdad6]/40 text-[#ba1a1a] rounded-xl text-sm font-black transition-all"
+              >
+                <LayoutDashboard className="w-5 h-5" />
+                <span>Dashboard</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate('/donor/guide');
+                }}
+                className="w-full flex items-center gap-3.5 px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-black transition-all"
+              >
+                <BookOpen className="w-5 h-5 text-slate-400" />
+                <span>Donation Guide</span>
+              </button>
+            </nav>
+
+            {/* Logout button in drawer - rounded-full outline matching Image 4 */}
+            <div className="pt-4 border-t border-slate-100/50">
+              <button
+                onClick={async () => {
+                  await api.logout();
+                  navigate('/donor/login');
+                }}
+                className="w-full py-3.5 border-2 border-[#ba1a1a] text-[#ba1a1a] hover:bg-[#ba1a1a]/5 rounded-full text-xs font-black uppercase tracking-widest transition-colors text-center"
+              >
+                LOGOUT
+              </button>
+            </div>
           </div>
-          <div>
-            <h2 className="text-sm font-bold text-on-surface">Red<span className="text-primary">Aid</span></h2>
-            <span className="text-[9px] uppercase tracking-wider text-on-surface-variant font-bold">Donor App</span>
-          </div>
+
+          {/* Click away area */}
+          <div className="flex-1" onClick={() => setMenuOpen(false)}></div>
         </div>
+      )}
+
+      {/* Main content pane */}
+      <div className="flex-1 flex flex-col overflow-y-auto pb-4">
         
-        {/* Profile/Menu Triggers */}
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={() => navigate('/donor/settings')}
-            className="p-1.5 rounded-lg hover:bg-slate-50 transition-colors"
-          >
-            <Settings className="w-5 h-5 text-slate-500" />
-          </button>
-          <button 
-            onClick={handleLogout}
-            className="p-1.5 rounded-lg hover:bg-red-50 text-red-500 transition-colors"
-          >
-            <LogOut className="w-5 h-5" />
-          </button>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 p-4 space-y-6 overflow-y-auto">
-        {/* Profile Card */}
-        <div className="bg-white border border-surface-container-high rounded-2xl p-4 shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full flex items-center justify-center">
-            <span className="text-2xl font-black text-primary/30 mt-[-10px] mr-[-10px]">{donor.bloodGroup}</span>
-          </div>
-          
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-lg font-bold text-primary">
-              {donor.fullName.split(' ').map(n => n[0]).join('')}
-            </div>
-            <div>
-              <h3 className="text-base font-extrabold text-on-surface">{donor.fullName}</h3>
-              <p className="text-xs text-on-surface-variant font-semibold mt-0.5">Blood Type {donor.bloodGroup} Donor</p>
-            </div>
-          </div>
-
-          {/* Availability Status Indicator */}
-          <div className="flex items-center justify-between border-t border-slate-100 pt-3 mt-3">
-            <div className={`flex items-center gap-2 px-3 py-1 border rounded-full text-xs font-semibold ${statusConfig.bg}`}>
-              <div className={`w-2 h-2 rounded-full ${statusConfig.dot} animate-pulse`}></div>
-              <span>{statusConfig.text}</span>
-            </div>
+        {/* Red header area */}
+        <div className="bg-[#ba1a1a] text-white p-5 rounded-b-[2rem] space-y-4 shadow relative shrink-0">
+          {/* Top row */}
+          <div className="flex justify-between items-center">
+            <button onClick={() => setMenuOpen(true)} className="text-white hover:opacity-80 transition-opacity">
+              <Menu className="w-6 h-6" />
+            </button>
+            <span className="text-base font-black tracking-wider uppercase">REDAID</span>
             <button 
-              onClick={() => setSnoozeOpen(!snoozeOpen)}
-              className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+              onClick={() => navigate('/donor/notifications')} 
+              className="text-white relative hover:opacity-80 transition-opacity"
             >
-              <Power className="w-3.5 h-3.5" />
-              <span>Change Status</span>
+              <Bell className="w-6 h-6" />
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-white text-[#ba1a1a] rounded-full text-[9px] font-black flex items-center justify-center border border-[#ba1a1a]">
+                2
+              </span>
             </button>
           </div>
 
-          {/* Snooze Options Dialog */}
-          {snoozeOpen && (
-            <div className="border-t border-dashed border-slate-200 mt-4 pt-4 space-y-2 animate-fade-in">
-              <span className="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Select availability status</span>
-              <div className="grid grid-cols-3 gap-2">
-                <button 
-                  onClick={() => handleToggleAvailability('active')}
-                  className="px-3 py-2 bg-green-50 text-green-700 text-xs font-bold rounded-xl border border-green-200 hover:bg-green-100 transition-colors"
-                >
-                  Available
-                </button>
-                <button 
-                  onClick={() => handleToggleAvailability('snoozed', 24)}
-                  className="px-3 py-2 bg-amber-50 text-amber-700 text-xs font-bold rounded-xl border border-amber-200 hover:bg-amber-100 transition-colors"
-                >
-                  Snooze 24h
-                </button>
-                <button 
-                  onClick={() => handleToggleAvailability('unavailable')}
-                  className="px-3 py-2 bg-slate-50 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors"
-                >
-                  Unavailable
-                </button>
-              </div>
+          {/* User welcome */}
+          <div className="space-y-1.5 pt-2 pb-6">
+            <h2 className="text-xl font-bold tracking-tight">
+              Good morning, {donor.fullName.split(' ')[0]} 👋
+            </h2>
+            <div className="flex gap-2">
+              <span className="inline-flex items-center gap-1 bg-white/20 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-white">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                {isEligible ? 'Eligible' : 'Not Eligible'}
+              </span>
+              <span className="bg-white/20 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-white">
+                {donor.bloodGroup}
+              </span>
             </div>
-          )}
+          </div>
         </div>
 
-        {/* Active Emergency Accepted Job (If en route/accepted) */}
-        {activeRequest && (
-          <div className="bg-primary/5 border-2 border-primary/20 rounded-2xl p-4 shadow-sm pulse-urgent">
-            <span className="text-[9px] uppercase tracking-wider text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-full">
-              Active Commited Request
-            </span>
-            <h4 className="text-base font-extrabold text-on-surface mt-2">{activeRequest.request.hospitalName}</h4>
-            <div className="flex justify-between items-center mt-1 text-xs text-on-surface-variant font-semibold">
-              <span className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-primary" />
-                {activeRequest.request.hospitalAddress.split(',')[0]}
-              </span>
-              <span>Blood Needed: {activeRequest.request.bloodGroup}</span>
+        {/* Overlapping Floating Banner Card */}
+        <div className="px-4 -mt-6 relative z-10">
+          <div className="bg-white border-l-4 border-l-[#ba1a1a] border border-[#eae7e7] rounded-2xl p-4 shadow-md flex justify-between items-center gap-4">
+            <div className="space-y-1">
+              <span className="text-[9px] font-black uppercase tracking-wider text-[#ba1a1a]">⚠️ Urgent</span>
+              <h3 className="text-base font-black text-slate-850 tracking-tight">{donor.bloodGroup} Blood Needed</h3>
+              <p className="text-[10px] font-bold text-slate-450">City General Hospital • 2.4 km</p>
             </div>
             
-            <button 
-              onClick={() => navigate(`/donor/request/${activeRequest.request.id}`)}
-              className="w-full bg-primary hover:bg-primary-container text-white py-2.5 px-4 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all mt-4 flex items-center justify-center gap-1.5"
+            <button
+              onClick={() => navigate('/donor/request/REQ-8291')}
+              className="bg-[#ba1a1a] hover:bg-[#93000a] text-white px-4 py-2 rounded-xl text-xs font-black transition-all shadow-sm hover:shadow shrink-0"
             >
-              <Zap className="w-4 h-4 text-white fill-white" />
-              <span>Open Navigation / Live Tracker</span>
+              Respond Now &rarr;
             </button>
           </div>
-        )}
+        </div>
 
-        {/* Emergency Alerts Feed */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h4 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
-              <Bell className="w-4 h-4 text-primary" />
-              Active Emergency Alerts ({alerts.length})
-            </h4>
+        {/* Your Activity metrics */}
+        <div className="px-4 pt-6 space-y-3">
+          <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Your Activity</h4>
+          <div className="grid grid-cols-3 gap-3">
+            
+            {/* Donations lifetime */}
+            <div className="bg-white border-t-2 border-t-[#ba1a1a] border border-[#eae7e7] rounded-2xl p-3 text-center shadow-sm flex flex-col justify-between">
+              <span className="text-2xl font-black text-[#ba1a1a]">{donor.totalDonations}</span>
+              <span className="text-[8.5px] font-black uppercase text-slate-450 leading-tight mt-1">Donations Lifetime</span>
+            </div>
+
+            {/* Days since last */}
+            <div className="bg-white border-t-2 border-t-[#ba1a1a] border border-[#eae7e7] rounded-2xl p-3 text-center shadow-sm flex flex-col justify-between">
+              <span className="text-2xl font-black text-[#ba1a1a]">{daysSinceLast}</span>
+              <span className="text-[8.5px] font-black uppercase text-slate-455 leading-tight mt-1">Days Since Last</span>
+            </div>
+
+            {/* Lives saved */}
+            <div className="bg-white border-t-2 border-t-[#ba1a1a] border border-[#eae7e7] rounded-2xl p-3 text-center shadow-sm flex flex-col justify-between">
+              <span className="text-2xl font-black text-[#ba1a1a]">{donor.totalDonations * 3}</span>
+              <span className="text-[8.5px] font-black uppercase text-slate-455 leading-tight mt-1">Lives Saved Est. Impact</span>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Nearby Requests list */}
+        <div className="px-4 pt-6 space-y-3">
+          <div className="flex justify-between items-baseline">
+            <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Nearby Requests</h4>
+            <button 
+              onClick={() => navigate('/donor/map')}
+              className="text-xs font-black text-[#ba1a1a] hover:underline"
+            >
+              See all
+            </button>
           </div>
 
-          {alerts.length === 0 ? (
-            <div className="bg-white border border-surface-container-high rounded-2xl p-6 text-center text-on-surface-variant text-xs font-semibold">
-              <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
-              <span>No incoming emergency requests for your blood type nearby right now.</span>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {alerts.map(item => (
-                <div 
-                  key={item.response.id}
-                  className="bg-white border border-red-100 hover:border-red-300 rounded-2xl p-4 shadow-sm flex flex-col justify-between transition-colors cursor-pointer"
-                  onClick={() => navigate(`/donor/request/${item.request.id}`)}
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="text-[9px] uppercase tracking-wider bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-full">
-                        {item.request.priority.toUpperCase()}
-                      </span>
-                      <h5 className="text-sm font-bold text-on-surface mt-2">{item.request.hospitalName}</h5>
-                      <p className="text-xs text-on-surface-variant mt-1 leading-normal font-semibold">
-                        Requires {item.request.unitsRequired} unit(s) of compatible blood.
-                      </p>
-                    </div>
-                    <div className="bg-red-50 text-primary font-bold text-xs px-2.5 py-1.5 rounded-lg border border-red-100 flex flex-col items-center">
-                      <span className="text-[9px] text-red-400 font-semibold uppercase">Need</span>
-                      <span className="text-base leading-none font-black">{item.request.bloodGroup}</span>
-                    </div>
+          <div className="space-y-3">
+            {nearbyRequests.map((req) => (
+              <div
+                key={req.id}
+                onClick={() => navigate(`/donor/request/REQ-8291`)}
+                className={`bg-white border border-[#eae7e7] rounded-2xl p-3.5 shadow-sm border-l-4 ${req.borderClass} flex items-center justify-between cursor-pointer hover:shadow transition-shadow`}
+              >
+                <div className="flex items-center gap-3.5">
+                  <div className={`w-11 h-11 rounded-xl font-black text-sm flex items-center justify-center shrink-0 ${req.bgClass}`}>
+                    {req.bloodGroup}
                   </div>
-
-                  <div className="flex items-center justify-between border-t border-slate-50 pt-3 mt-3 text-xs font-semibold text-on-surface-variant">
-                    <span>Proximity: 4.2 km</span>
-                    <span className="text-primary font-bold group-hover:translate-x-1 transition-transform">
-                      Respond &rarr;
-                    </span>
+                  <div>
+                    <h5 className="text-sm font-black text-slate-850">{req.hospitalName}</h5>
+                    <p className="text-[10px] font-bold text-slate-450 mt-0.5">{req.distance} • {req.units} • {req.time}</p>
+                    <span className="text-[9px] font-semibold text-slate-400 italic">Tap card to respond</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+
+                <div className="flex items-center gap-1.5">
+                  <span className={`px-2 py-0.5 rounded text-[8.5px] font-black uppercase ${
+                    req.priority === 'Urgent' ? 'bg-red-50 text-red-600' : 'bg-slate-100 text-slate-500'
+                  }`}>
+                    {req.priority}
+                  </span>
+                  <ChevronRight className="w-5 h-5 text-slate-400" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Stats & Badges Section */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white border border-surface-container-high rounded-2xl p-4 shadow-sm text-center">
-            <span className="text-[9px] uppercase tracking-wider text-on-surface-variant font-bold">Reliability Score</span>
-            <div className="w-16 h-16 rounded-full border-4 border-green-500 flex items-center justify-center mx-auto my-3">
-              <span className="text-base font-extrabold text-on-surface">{donor.trustScore.toFixed(0)}%</span>
-            </div>
-            <p className="text-[10px] text-on-surface-variant leading-normal">
-              Keep commitments to maintain a high priority matching score.
-            </p>
-          </div>
-
-          <div className="bg-white border border-surface-container-high rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-            <div className="text-center">
-              <span className="text-[9px] uppercase tracking-wider text-on-surface-variant font-bold">Total Donations</span>
-              <p className="text-3xl font-black text-primary my-2">{donor.totalDonations}</p>
+        {/* Eligibility Progress card */}
+        <div className="px-4 pt-6">
+          <div className="bg-[#ffdad6]/20 border border-[#ffdad6]/50 rounded-2xl p-4 shadow-sm space-y-3">
+            <div className="flex justify-between items-baseline text-[10px] font-black uppercase tracking-wider text-slate-650">
+              <span>Next eligible to donate in</span>
+              <span>{progressPercent}%</span>
             </div>
             
-            {/* Gamification badges */}
-            <div className="border-t border-slate-100 pt-2 mt-2">
-              <span className="text-[9px] uppercase tracking-wider text-on-surface-variant font-bold block mb-1">Badges Earned</span>
-              <div className="flex gap-1.5 justify-center">
-                {donor.badges.slice(0, 3).map(b => (
-                  <div key={b} className="p-1 bg-amber-50 rounded-lg border border-amber-200" title={b}>
-                    <Award className="w-4 h-4 text-amber-500 fill-amber-500/20" />
-                  </div>
-                ))}
-                {donor.badges.length === 0 && (
-                  <span className="text-[9px] text-on-surface-variant font-medium">None yet. Donate to unlock!</span>
-                )}
-              </div>
+            <div className="flex items-baseline justify-between">
+              <span className="text-lg font-black text-[#ba1a1a]">
+                {isEligible ? 'Eligible Now!' : `${daysRemaining} days`}
+              </span>
+              <span className="text-[10px] font-black text-slate-450">
+                Gap requirement: 90 days
+              </span>
+            </div>
+
+            <div className="w-full bg-slate-200/60 h-2 rounded-full overflow-hidden">
+              <div 
+                className="bg-[#ba1a1a] h-full rounded-full transition-all duration-500"
+                style={{ width: `${progressPercent}%` }}
+              ></div>
             </div>
           </div>
         </div>
-      </main>
 
-      {/* Bottom Navigation */}
-      <nav className="bg-white border-t border-surface-container-high py-2.5 px-6 flex justify-around sticky bottom-0 z-30 shadow-md">
+      </div>
+
+      {/* ================= FOOTER NAVIGATION SYSTEM ================= */}
+      <nav className="bg-white border-t border-[#eae7e7] py-2 px-4 flex justify-around items-center sticky bottom-0 z-30 shadow-md">
+        
+        {/* Home active tab */}
         <button 
           onClick={() => navigate('/donor/dashboard')}
-          className="flex flex-col items-center gap-1.5 text-primary"
+          className="flex flex-col items-center gap-1 text-[#ba1a1a]"
         >
-          <Heart className="w-5 h-5 fill-primary" />
-          <span className="text-[9px] font-bold uppercase tracking-wider">Dashboard</span>
+          <Home className="w-5 h-5 fill-current" />
+          <span className="text-[8.5px] font-black uppercase tracking-wider">Home</span>
         </button>
+
+        {/* Map tab */}
+        <button 
+          onClick={() => navigate('/donor/map')}
+          className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 transition-colors"
+        >
+          <MapIcon className="w-5 h-5" />
+          <span className="text-[8.5px] font-black uppercase tracking-wider">Map</span>
+        </button>
+
+        {/* Overlapping Donate tab */}
+        <button 
+          onClick={() => navigate('/donor/donate')}
+          className="relative -mt-6 w-14 h-14 bg-[#ba1a1a] hover:bg-[#93000a] text-white rounded-full flex items-center justify-center shadow-lg border-4 border-white transition-all transform active:scale-95"
+        >
+          <span className="text-[10px] font-black uppercase tracking-widest">Donate</span>
+        </button>
+
+        {/* History tab */}
         <button 
           onClick={() => navigate('/donor/history')}
-          className="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-600 transition-colors"
+          className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 transition-colors"
         >
           <Calendar className="w-5 h-5" />
-          <span className="text-[9px] font-bold uppercase tracking-wider">History</span>
+          <span className="text-[8.5px] font-black uppercase tracking-wider">History</span>
         </button>
+
+        {/* Profile tab */}
         <button 
-          onClick={() => navigate('/donor/settings')}
-          className="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-600 transition-colors"
+          onClick={() => navigate('/donor/profile')}
+          className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 transition-colors"
         >
-          <Settings className="w-5 h-5" />
-          <span className="text-[9px] font-bold uppercase tracking-wider">Settings</span>
+          <User className="w-5 h-5" />
+          <span className="text-[8.5px] font-black uppercase tracking-wider">Profile</span>
         </button>
+
       </nav>
+
     </div>
   );
 };

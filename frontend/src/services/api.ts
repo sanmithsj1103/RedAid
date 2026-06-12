@@ -246,6 +246,25 @@ const INITIAL_DONORS: Donor[] = [
     healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
     isVerified: true,
     isBlacklisted: false,
+  },
+  {
+    id: 'donor_samuel',
+    fullName: 'Samuel Richardson',
+    phone: '+1 (555) 012-3456',
+    dateOfBirth: '2000-01-01',
+    bloodGroup: 'O+',
+    location: { lat: 28.6139, lng: 77.2090, city: 'New Delhi', address: 'Sector 12, New Delhi' },
+    availability: 'active',
+    snoozeUntil: null,
+    lastDonatedAt: '2023-10-24T12:00:00Z',
+    trustScore: 85,
+    totalDonations: 12,
+    totalResponses: 15,
+    totalAccepted: 12,
+    badges: ['lifesaver', 'veteran', 'streak_3', 'first_donation', 'gold_donor'],
+    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
+    isVerified: true,
+    isBlacklisted: false,
   }
 ];
 
@@ -492,7 +511,7 @@ class ApiService {
 
   constructor() {
     let loadedDonors = loadData('donors', INITIAL_DONORS);
-    if (!loadedDonors.some(d => d.fullName === 'Julianne Dorsey')) {
+    if (!loadedDonors.some(d => d.fullName === 'Samuel Richardson')) {
       localStorage.removeItem('redaid_donors');
       localStorage.removeItem('redaid_hospitals');
       localStorage.removeItem('redaid_requests');
@@ -510,7 +529,7 @@ class ApiService {
     this.inventory = loadData('inventory', INITIAL_INVENTORY);
     this.surplus = loadData('surplus', INITIAL_SURPLUS);
     this.auditLogs = loadData('audit_logs', []);
-    this.activeUser = loadData('active_user', { id: 'hospital_1', role: 'hospital' }); // Default logged in user to hospital_1 for testing
+    this.activeUser = loadData('active_user', { id: 'donor_samuel', role: 'donor' }); // Default active user to donor_samuel for testing donor portal
   }
 
   private persist() {
@@ -557,7 +576,8 @@ class ApiService {
     }
 
     if (role === 'donor') {
-      const donor = this.donors.find(d => d.phone === phone);
+      const cleanPhoneInput = phone.replace(/\D/g, '');
+      const donor = this.donors.find(d => d.phone.replace(/\D/g, '') === cleanPhoneInput);
       if (donor) {
         if (donor.isBlacklisted) throw new Error('Your account has been blacklisted.');
         this.activeUser = { id: donor.id, role: 'donor' };
@@ -706,6 +726,35 @@ class ApiService {
     return this.delay(joined);
   }
 
+  getBloodRequestById(requestId: string) {
+    const request = this.requests.find(r => r.id === requestId);
+    return this.delay(request || null);
+  }
+
+  getOrCreateResponseForDonor(requestId: string) {
+    if (!this.activeUser || this.activeUser.role !== 'donor') throw new Error('Unauthorized');
+    const donor = this.donors.find(d => d.id === this.activeUser!.id);
+    if (!donor) throw new Error('Donor profile not found');
+
+    let response = this.responses.find(r => r.requestId === requestId && r.donorId === donor.id);
+    if (!response) {
+      response = {
+        id: `resp_sim_${requestId}`,
+        requestId: requestId,
+        donorId: donor.id,
+        donorName: donor.fullName,
+        donorPhone: donor.phone,
+        donorBloodGroup: donor.bloodGroup,
+        donorTrustScore: donor.trustScore,
+        status: 'notified',
+        notifiedAt: new Date().toISOString()
+      };
+      this.responses.push(response);
+      this.persist();
+    }
+    return this.delay(response);
+  }
+
   respondToRequest(responseId: string, action: 'accept' | 'decline') {
     if (!this.activeUser || this.activeUser.role !== 'donor') throw new Error('Unauthorized');
     const status: ResponseStatus = action === 'accept' ? 'accepted' : 'declined';
@@ -750,20 +799,39 @@ class ApiService {
     return this.delay({ success: true });
   }
 
-  updateDonorResponseStatus(responseId: string, status: 'en_route' | 'arrived') {
+  updateDonorResponseStatus(responseId: string, status: 'en_route' | 'arrived' | 'donated') {
     this.responses = this.responses.map(r => {
       if (r.id === responseId) {
-        const timeKey = status === 'en_route' ? 'respondedAt' : 'arrivedAt';
+        let timeKey = 'respondedAt';
+        if (status === 'arrived') timeKey = 'arrivedAt';
+        if (status === 'donated') timeKey = 'donatedAt';
+
         const updated = { ...r, status: status as ResponseStatus, [timeKey]: new Date().toISOString() };
         this.log(`donor.status_${status}`, 'donation_responses', r.id);
 
         // Update central request status as well
         this.requests = this.requests.map(req => {
           if (req.id === r.requestId) {
-            return { ...req, status: status as RequestStatus };
+            const nextStatus = status === 'donated' ? 'completed' : status;
+            const nextFulfilled = status === 'donated' ? Math.min(req.unitsRequired, req.unitsFulfilled + 1) : req.unitsFulfilled;
+            return { ...req, status: nextStatus as RequestStatus, unitsFulfilled: nextFulfilled };
           }
           return req;
         });
+
+        // Update donor stats if completed
+        if (status === 'donated') {
+          this.donors = this.donors.map(d => {
+            if (d.id === r.donorId) {
+              return {
+                ...d,
+                totalDonations: d.totalDonations + 1,
+                lastDonatedAt: new Date().toISOString()
+              };
+            }
+            return d;
+          });
+        }
 
         return updated;
       }
