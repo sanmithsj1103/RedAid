@@ -6,7 +6,11 @@ import { env } from './env.js';
  * Uses TLS by default for Upstash connections.
  * Free tier: 10K commands/day, 256MB storage.
  */
-export const redis = new Redis(env.UPSTASH_REDIS_REST_URL, {
+const redisHost = env.UPSTASH_REDIS_REST_URL.replace(/^https?:\/\//, '');
+
+export const redis = new Redis({
+  host: redisHost,
+  port: 6379,
   password: env.UPSTASH_REDIS_REST_TOKEN,
   maxRetriesPerRequest: null, // Required by BullMQ
   enableReadyCheck: false,
