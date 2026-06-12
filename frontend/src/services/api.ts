@@ -902,13 +902,49 @@ class ApiService {
   // ─── Registration Methods ──────────────────────────────
 
   async registerDonor(data: any) {
-    const res: any = await this.request('POST', '/auth/donor/register', data);
+    // Transform frontend data to backend donorRegisterSchema shape
+    const backendPayload = {
+      fullName: data.fullName,
+      dateOfBirth: data.dateOfBirth,
+      bloodGroup: data.bloodGroup,
+      city: data.location?.city || '',
+      state: data.location?.state || 'Karnataka',
+      latitude: data.location?.lat ?? 12.9716,
+      longitude: data.location?.lng ?? 77.5946,
+      healthDeclaration: {
+        consentGiven: true,
+        questions: {
+          recentIllness: !data.healthDeclaration?.generalFitness,
+          recentSurgery: !data.healthDeclaration?.noTattoosRecent,
+          currentMedications: !data.healthDeclaration?.noMedicationRecent,
+          chronicConditions: false,
+          recentTransfusion: false,
+          pregnancy: false,
+        }
+      }
+    };
+
+    const res: any = await this.request('POST', '/auth/donor/register', backendPayload);
     // After registration, the user must re-verify OTP to get updated token with role
     return { success: true, donorId: res.donorId || res.data?.donorId, role: 'donor' };
   }
 
   async registerHospital(data: any) {
-    const res: any = await this.request('POST', '/auth/hospital/register', data);
+    // Transform frontend data to backend hospitalRegisterSchema shape
+    const backendPayload = {
+      name: data.name,
+      registrationNumber: data.registrationNumber,
+      phone: data.phone,
+      email: data.email,
+      address: data.address,
+      city: data.location?.city || '',
+      state: data.location?.state || 'Delhi',
+      latitude: data.location?.lat ?? 28.6139,
+      longitude: data.location?.lng ?? 77.2090,
+      department: data.department || 'Blood Bank Services',
+    };
+
+    const res: any = await this.request('POST', '/auth/hospital/register', backendPayload);
     return { success: true, hospitalId: res.hospitalId || res.data?.hospitalId, role: 'hospital', isVerified: false };
   }
 

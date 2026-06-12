@@ -20,10 +20,11 @@ export function globalErrorHandler(
 ): void {
   // Zod validation errors
   if (err instanceof ZodError) {
+    const messages = err.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join('; ');
     res.status(400).json({
       error: {
         code: 'VALIDATION_ERROR',
-        message: 'Invalid request data',
+        message: messages || 'Invalid request data',
         details: err.flatten(),
       },
     });
