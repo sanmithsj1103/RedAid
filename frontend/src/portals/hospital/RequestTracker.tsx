@@ -61,7 +61,7 @@ export const RequestTracker: React.FC = () => {
   const handleMarkComplete = async (responseId: string) => {
     setActionLoading(true);
     try {
-      await api.markDonationComplete(responseId);
+      await api.markDonationComplete(responseId, requestId);
       setToast({ message: 'Donation verified successfully! Certifying donor...', type: 'success' });
       setFeedbackResponseId(responseId); // Open feedback submission form
       fetchTracker();
@@ -75,7 +75,7 @@ export const RequestTracker: React.FC = () => {
   const handleMarkNoShow = async (responseId: string) => {
     setActionLoading(true);
     try {
-      await api.markDonorNoShow(responseId);
+      await api.markDonorNoShow(responseId, requestId);
       setToast({ message: 'Donor registered as No-Show. Reliability index updated.', type: 'warning' });
       fetchTracker();
     } catch (err: any) {
@@ -90,7 +90,7 @@ export const RequestTracker: React.FC = () => {
     if (!feedbackResponseId) return;
     setActionLoading(true);
     try {
-      await api.submitDonorFeedback(feedbackResponseId, rating, feedback);
+      await api.submitDonorFeedback(feedbackResponseId, rating, feedback, requestId);
       setToast({ message: 'Donor rating and reviews submitted successfully!', type: 'success' });
       setFeedbackResponseId(null);
       setFeedback('');

@@ -22,8 +22,30 @@ export const DonorDashboard: React.FC = () => {
       setDonor(profile);
 
       const notifications = await api.getDonorNotifications();
-      // Filter responses that are 'notified' or 'accepted' to show as active alerts
-      const activeAlerts = notifications.filter(n => n.response.status === 'notified');
+      // Backend returns donation_response rows with joined bloodRequests
+      // Transform into { response, request } shape for the template
+      const transformed = (notifications || []).map((n: any) => {
+        const req = n.bloodRequests || {};
+        const hospital = req.hospitals || {};
+        return {
+          response: {
+            id: n.id,
+            status: n.status,
+            notifiedAt: n.notifiedAt || n.notified_at,
+          },
+          request: {
+            id: req.id || n.requestId || n.request_id,
+            hospitalName: hospital.name || '',
+            hospitalAddress: hospital.address || '',
+            hospitalPhone: hospital.phone || '',
+            bloodGroup: req.bloodGroup || req.blood_group || '',
+            unitsRequired: req.unitsRequired || req.units_required || 0,
+            priority: req.priority || 'urgent',
+            status: req.status || '',
+          },
+        };
+      });
+      const activeAlerts = transformed.filter((n: any) => n.response.status === 'notified');
       setAlerts(activeAlerts);
 
       const active = await api.getDonorActiveRequest();

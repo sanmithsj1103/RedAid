@@ -223,6 +223,31 @@ router.get('/badges', async (req: Request, res: Response, next: NextFunction) =>
 });
 
 // ────────────────────────────────────────────────────────
+// GET /v1/donor/notifications
+// ────────────────────────────────────────────────────────
+router.get('/notifications', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const supabase = getSupabase();
+    const { data, error } = await supabase
+      .from('donation_responses')
+      .select(`
+        *,
+        blood_requests:request_id (
+          id, blood_group, priority, status, units_required, units_fulfilled, notes, created_at, expires_at,
+          hospitals:hospital_id (name, address, city, phone, location)
+        )
+      `)
+      .eq('donor_id', req.entityId!)
+      .order('notified_at', { ascending: false });
+
+    if (error) throw error;
+    res.status(200).json({ data: data ?? [] });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ────────────────────────────────────────────────────────
 // GET /v1/donor/requests/active
 // ────────────────────────────────────────────────────────
 router.get('/requests/active', async (req: Request, res: Response, next: NextFunction) => {

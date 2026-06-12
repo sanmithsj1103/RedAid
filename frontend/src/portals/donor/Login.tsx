@@ -40,9 +40,14 @@ export const DonorLogin: React.FC = () => {
     setError('');
     setLoading(true);
     try {
-      await api.verifyOtp(phone, otp);
-      const res = await api.login(phone, 'donor');
-      navigate('/donor/dashboard');
+      const res = await api.verifyOtp(phone, otp);
+      if (res.isNewUser) {
+        // New user — redirect to registration
+        navigate('/donor/register');
+      } else {
+        // Existing user — session already established
+        navigate('/donor/dashboard');
+      }
     } catch (err: any) {
       setError(err.message || 'OTP verification failed');
     } finally {
@@ -98,7 +103,7 @@ export const DonorLogin: React.FC = () => {
                 />
               </div>
               <p className="text-[10px] text-on-surface-variant mt-1.5 leading-normal">
-                Use <span className="font-semibold text-primary">+919876543210</span> (Arjun) or <span className="font-semibold text-primary">+919876543211</span> (Priya) to test verified accounts.
+                Enter your registered phone number in <span className="font-semibold text-primary">+91XXXXXXXXXX</span> format.
               </p>
             </div>
 

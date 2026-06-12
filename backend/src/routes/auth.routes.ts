@@ -39,6 +39,12 @@ const otpVerifySchema = z.object({
   token: z.string().length(6, 'OTP must be 6 digits'),
 });
 
+const loginSchema = z.object({
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
+  password: z.string().min(1),
+});
+
 const donorRegisterSchema = z.object({
   full_name: z.string().min(2).max(100),
   date_of_birth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -144,6 +150,52 @@ router.post('/otp/verify', otpLimiter, async (req: Request, res: Response, next:
         entity_id: entityId,
       });
     }
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ────────────────────────────────────────────────────────
+// POST /v1/auth/login
+// ────────────────────────────────────────────────────────
+router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, phone, password } = loginSchema.parse(req.body);
+    const supabase = getSupabase();
+
+    let result;
+    if (email) {
+      result = await supabase.auth.signInWithPassword({ email, password });
+    } else if (phone) {
+      result = await supabase.auth.signInWithPassword({ phone, password });
+    } else {
+      throw AppError.badRequest('Email or phone is required');
+    }
+
+    if (result.error || !result.data.session) {
+      logger.warn({ error: result.error?.message, email, phone }, 'Login failed');
+      throw new AppError(401, 'LOGIN_FAILED', result.error?.message ?? 'Invalid credentials');
+    }
+
+    const session = result.data.session;
+    const user = result.data.user;
+    const role = user?.user_metadata?.['role'] as string | undefined;
+    const entityId = user?.user_metadata?.['entity_id'] as string | undefined;
+
+    // Set refresh token as httpOnly cookie
+    res.cookie('refresh_token', session.refresh_token, {
+      httpOnly: true,
+      secure: process.env['NODE_ENV'] === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: '/v1/auth',
+    });
+
+    res.status(200).json({
+      access_token: session.access_token,
+      role,
+      entity_id: entityId,
+    });
   } catch (err) {
     next(err);
   }
@@ -328,7 +380,7 @@ router.post('/hospital/register', requireAuthLight, async (req: Request, res: Re
 // ────────────────────────────────────────────────────────
 router.post('/refresh', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const refreshToken = req.cookies?.['refresh_token'] as string | undefined;
+    const refreshToken = (req.cookies?.['refresh_token'] || req.body?.refresh_token) as string | undefined;
     if (!refreshToken) {
       throw AppError.unauthorized('No refresh token provided');
     }
