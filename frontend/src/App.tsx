@@ -15,9 +15,13 @@ import { DonorProfileSettings } from './portals/donor/ProfileSettings';
 import { HospitalLogin } from './portals/hospital/Login';
 import { HospitalDashboard } from './portals/hospital/HospitalDashboard';
 import { CreateRequest } from './portals/hospital/CreateRequest';
+import { RequestsList } from './portals/hospital/RequestsList';
 import { RequestTracker } from './portals/hospital/RequestTracker';
 import { InventoryManager } from './portals/hospital/InventoryManager';
 import { CrossHospitalCoordination } from './portals/hospital/CrossHospitalCoordination';
+import { DonorsDirectory } from './portals/hospital/DonorsDirectory';
+import { AnalyticsInsights } from './portals/hospital/AnalyticsInsights';
+import { HospitalSettings } from './portals/hospital/HospitalSettings';
 
 // Admin Portal Screens
 import { AdminLogin } from './portals/admin/Login';
@@ -48,9 +52,13 @@ const App: React.FC = () => {
         <Route path="/hospital" element={<HospitalDashboard />} />
         <Route path="/hospital/login" element={<HospitalLogin />} />
         <Route path="/hospital/create" element={<CreateRequest />} />
+        <Route path="/hospital/requests" element={<RequestsList />} />
         <Route path="/hospital/request/:requestId" element={<RequestTracker />} />
         <Route path="/hospital/inventory" element={<InventoryManager />} />
         <Route path="/hospital/coordination" element={<CrossHospitalCoordination />} />
+        <Route path="/hospital/donors" element={<DonorsDirectory />} />
+        <Route path="/hospital/analytics" element={<AnalyticsInsights />} />
+        <Route path="/hospital/settings" element={<HospitalSettings />} />
 
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminDashboard />} />

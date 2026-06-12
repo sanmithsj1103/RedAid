@@ -115,6 +115,120 @@ export interface AuditLog {
 // --- Initial Mock Data ---
 const INITIAL_DONORS: Donor[] = [
   {
+    id: 'donor_julianne',
+    fullName: 'Julianne Dorsey',
+    phone: '+919876543220',
+    dateOfBirth: '1997-04-12',
+    bloodGroup: 'O+',
+    location: { lat: 12.9812, lng: 77.7320, city: 'Bengaluru', address: 'Hope Farm, Bengaluru' },
+    availability: 'active',
+    snoozeUntil: null,
+    lastDonatedAt: '2023-10-12T12:00:00Z',
+    trustScore: 98,
+    totalDonations: 14,
+    totalResponses: 15,
+    totalAccepted: 14,
+    badges: ['lifesaver', 'veteran'],
+    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
+    isVerified: true,
+    isBlacklisted: false,
+  },
+  {
+    id: 'donor_marcus',
+    fullName: 'Marcus Kinsley',
+    phone: '+919876543221',
+    dateOfBirth: '1993-02-14',
+    bloodGroup: 'AB-',
+    location: { lat: 12.9242, lng: 77.7121, city: 'Bengaluru', address: 'Bellandur, Bengaluru' },
+    availability: 'snoozed',
+    snoozeUntil: '2026-07-20T18:00:00Z',
+    lastDonatedAt: '2023-11-22T12:00:00Z',
+    trustScore: 85,
+    totalDonations: 8,
+    totalResponses: 10,
+    totalAccepted: 8,
+    badges: ['veteran'],
+    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
+    isVerified: true,
+    isBlacklisted: false,
+  },
+  {
+    id: 'donor_sarah_r',
+    fullName: 'Sarah Richardson',
+    phone: '+919876543222',
+    dateOfBirth: '1994-09-08',
+    bloodGroup: 'A-',
+    location: { lat: 12.9620, lng: 77.7580, city: 'Bengaluru', address: 'Channasandra, Bengaluru' },
+    availability: 'active',
+    snoozeUntil: null,
+    lastDonatedAt: '2023-12-05T12:00:00Z',
+    trustScore: 92,
+    totalDonations: 21,
+    totalResponses: 25,
+    totalAccepted: 21,
+    badges: ['lifesaver', 'veteran', 'streak_5'],
+    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
+    isVerified: true,
+    isBlacklisted: false,
+  },
+  {
+    id: 'donor_thomas',
+    fullName: 'Thomas Bennington',
+    phone: '+919876543223',
+    dateOfBirth: '1989-10-10',
+    bloodGroup: 'B+',
+    location: { lat: 12.8710, lng: 77.6840, city: 'Bengaluru', address: 'Electronic City, Bengaluru' },
+    availability: 'unavailable',
+    snoozeUntil: null,
+    lastDonatedAt: '2023-09-15T12:00:00Z',
+    trustScore: 72,
+    totalDonations: 5,
+    totalResponses: 8,
+    totalAccepted: 5,
+    badges: ['veteran'],
+    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
+    isVerified: true,
+    isBlacklisted: false,
+  },
+  {
+    id: 'donor_anita',
+    fullName: 'Anita Lowman',
+    phone: '+919876543224',
+    dateOfBirth: '1991-05-15',
+    bloodGroup: 'O-',
+    location: { lat: 12.9412, lng: 77.7210, city: 'Bengaluru', address: 'Marathahalli, Bengaluru' },
+    availability: 'active',
+    snoozeUntil: null,
+    lastDonatedAt: '2024-01-18T12:00:00Z',
+    trustScore: 100,
+    totalDonations: 32,
+    totalResponses: 32,
+    totalAccepted: 32,
+    badges: ['lifesaver', 'veteran', 'streak_5'],
+    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
+    isVerified: true,
+    isBlacklisted: false,
+  },
+  {
+    id: 'donor_adrian',
+    fullName: 'Adrian Sterling',
+    phone: '+919876543225',
+    dateOfBirth: '1996-07-20',
+    bloodGroup: 'O-',
+    location: { lat: 12.9512, lng: 77.7310, city: 'Bengaluru', address: 'Brookefield, Bengaluru' },
+    availability: 'active',
+    snoozeUntil: null,
+    lastDonatedAt: '2023-10-12T12:00:00Z',
+    trustScore: 98,
+    totalDonations: 10,
+    totalResponses: 11,
+    totalAccepted: 10,
+    badges: ['lifesaver', 'streak_3'],
+    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
+    isVerified: true,
+    isBlacklisted: false,
+  },
+  {
     id: 'donor_1',
     fullName: 'Arjun Sharma',
     phone: '+919876543210',
@@ -130,82 +244,6 @@ const INITIAL_DONORS: Donor[] = [
     totalAccepted: 4,
     badges: ['first_donation', 'streak_3', 'lifesaver'],
     healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-  },
-  {
-    id: 'donor_2',
-    fullName: 'Priya Patel',
-    phone: '+919876543211',
-    dateOfBirth: '1995-11-23',
-    bloodGroup: 'A-',
-    location: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru', address: 'Whitefield, Bengaluru' },
-    availability: 'active',
-    snoozeUntil: null,
-    lastDonatedAt: null,
-    trustScore: 100,
-    totalDonations: 0,
-    totalResponses: 1,
-    totalAccepted: 0,
-    badges: [],
-    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-  },
-  {
-    id: 'donor_3',
-    fullName: 'Rohan Murthy',
-    phone: '+919876543212',
-    dateOfBirth: '1990-08-05',
-    bloodGroup: 'O-',
-    location: { lat: 12.9279, lng: 77.6271, city: 'Bengaluru', address: 'Koramangala, Bengaluru' },
-    availability: 'snoozed',
-    snoozeUntil: '2026-06-20T18:00:00Z',
-    lastDonatedAt: '2026-04-01T12:00:00Z',
-    trustScore: 85.0,
-    totalDonations: 8,
-    totalResponses: 15,
-    totalAccepted: 9,
-    badges: ['first_donation', 'lifesaver', 'veteran'],
-    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-  },
-  {
-    id: 'donor_4',
-    fullName: 'Vikram Singh',
-    phone: '+919876543213',
-    dateOfBirth: '1987-03-15',
-    bloodGroup: 'B+',
-    location: { lat: 12.9141, lng: 77.6413, city: 'Bengaluru', address: 'HSR Layout, Bengaluru' },
-    availability: 'active',
-    snoozeUntil: null,
-    lastDonatedAt: '2025-12-10T11:00:00Z',
-    trustScore: 92.0,
-    totalDonations: 12,
-    totalResponses: 20,
-    totalAccepted: 13,
-    badges: ['veteran', 'streak_5'],
-    healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
-    isVerified: true,
-    isBlacklisted: false,
-  },
-  {
-    id: 'donor_5',
-    fullName: 'Sunita Rao',
-    phone: '+919876543214',
-    dateOfBirth: '2001-09-30',
-    bloodGroup: 'AB+',
-    location: { lat: 12.9304, lng: 77.5794, city: 'Bengaluru', address: 'Jayanagar, Bengaluru' },
-    availability: 'unavailable',
-    snoozeUntil: null,
-    lastDonatedAt: '2026-05-10T09:00:00Z',
-    trustScore: 50.0,
-    totalDonations: 1,
-    totalResponses: 5,
-    totalAccepted: 1,
-    badges: ['first_donation'],
-    healthDeclaration: { noTattoosRecent: false, noMedicationRecent: true, generalFitness: false },
     isVerified: true,
     isBlacklisted: false,
   }
@@ -225,7 +263,7 @@ const INITIAL_HOSPITALS: Hospital[] = [
   },
   {
     id: 'hospital_2',
-    name: 'Apollo Hospitals Jayanagar',
+    name: 'St. Jude Medical',
     registrationNumber: 'KA-BLR-2012-0451',
     phone: '+918026304050',
     email: 'admin.jn@apollohospitals.com',
@@ -249,53 +287,129 @@ const INITIAL_HOSPITALS: Hospital[] = [
 
 const INITIAL_REQUESTS: BloodRequest[] = [
   {
-    id: 'req_1',
+    id: 'REQ-8291',
     hospitalId: 'hospital_1',
     hospitalName: 'Manipal Hospital Whitefield',
     hospitalPhone: '+918025024444',
     hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
     hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
-    bloodGroup: 'A-',
-    unitsRequired: 2,
+    bloodGroup: 'O-',
+    unitsRequired: 4,
     unitsFulfilled: 0,
     priority: 'critical',
     status: 'dispatched',
-    notes: 'Emergency bypass surgery. Patient currently in Cardiac ICU. Needs compatibility matching.',
+    notes: 'Emergency trauma transfusion. High risk blood group matched outreach required.',
     searchRadiusKm: 15,
-    donorsNotified: 2,
-    donorsAccepted: 1,
-    expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours
-    createdAt: new Date().toISOString(),
+    donorsNotified: 124,
+    donorsAccepted: 2,
+    expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 2 * 60 * 1000).toISOString(), // 2 mins ago
   },
   {
-    id: 'req_2',
-    hospitalId: 'hospital_2',
-    hospitalName: 'Apollo Hospitals Jayanagar',
-    hospitalPhone: '+918026304050',
-    hospitalAddress: '21st Main Road, Jayanagar 1st Block, Bengaluru',
-    hospitalLocation: { lat: 12.9304, lng: 77.5794, city: 'Bengaluru' },
-    bloodGroup: 'O+',
-    unitsRequired: 4,
-    unitsFulfilled: 2,
+    id: 'REQ-8290',
+    hospitalId: 'hospital_1',
+    hospitalName: 'Manipal Hospital Whitefield',
+    hospitalPhone: '+918025024444',
+    hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
+    hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
+    bloodGroup: 'AB+',
+    unitsRequired: 2,
+    unitsFulfilled: 0,
     priority: 'urgent',
-    status: 'accepted',
-    notes: 'Severe thalassaemia patient requiring blood transfusion.',
+    status: 'en_route',
+    notes: 'Urgent post-partum hemorrhage support.',
     searchRadiusKm: 15,
-    donorsNotified: 8,
-    donorsAccepted: 2,
+    donorsNotified: 34,
+    donorsAccepted: 1,
     expiresAt: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 mins ago
+  },
+  {
+    id: 'REQ-8288',
+    hospitalId: 'hospital_1',
+    hospitalName: 'Manipal Hospital Whitefield',
+    hospitalPhone: '+918025024444',
+    hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
+    hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
+    bloodGroup: 'A+',
+    unitsRequired: 2,
+    unitsFulfilled: 2,
+    priority: 'scheduled',
+    status: 'completed',
+    notes: 'Planned hip arthroplasty surgery. Units reserved and verified successfully.',
+    searchRadiusKm: 15,
+    donorsNotified: 45,
+    donorsAccepted: 2,
+    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+  },
+  {
+    id: 'REQ-8285',
+    hospitalId: 'hospital_1',
+    hospitalName: 'Manipal Hospital Whitefield',
+    hospitalPhone: '+918025024444',
+    hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
+    hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
+    bloodGroup: 'B-',
+    unitsRequired: 1,
+    unitsFulfilled: 0,
+    priority: 'critical',
+    status: 'dispatched',
+    notes: 'Neonate ICU compatibility match requested immediately.',
+    searchRadiusKm: 15,
+    donorsNotified: 88,
+    donorsAccepted: 0,
+    expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
+  },
+  {
+    id: 'REQ-8280',
+    hospitalId: 'hospital_1',
+    hospitalName: 'Manipal Hospital Whitefield',
+    hospitalPhone: '+918025024444',
+    hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
+    hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
+    bloodGroup: 'AB+',
+    unitsRequired: 3,
+    unitsFulfilled: 0,
+    priority: 'scheduled',
+    status: 'cancelled',
+    notes: 'Scheduled bypass cancelled by primary physician.',
+    searchRadiusKm: 15,
+    donorsNotified: 12,
+    donorsAccepted: 0,
+    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+  },
+  {
+    id: 'REQ-8275',
+    hospitalId: 'hospital_1',
+    hospitalName: 'Manipal Hospital Whitefield',
+    hospitalPhone: '+918025024444',
+    hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
+    hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
+    bloodGroup: 'O+',
+    unitsRequired: 5,
+    unitsFulfilled: 0,
+    priority: 'critical',
+    status: 'dispatched',
+    notes: 'Multivehicle collision emergency room mass transfusion.',
+    searchRadiusKm: 15,
+    donorsNotified: 210,
+    donorsAccepted: 4,
+    expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
   }
 ];
 
 const INITIAL_RESPONSES: DonationResponse[] = [
   {
     id: 'resp_1',
-    requestId: 'req_1',
+    requestId: 'REQ-8291',
     donorId: 'donor_2',
     donorName: 'Priya Patel',
     donorPhone: '+919876543211',
-    donorBloodGroup: 'A-',
+    donorBloodGroup: 'O-',
     donorTrustScore: 100,
     status: 'accepted',
     notifiedAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
@@ -303,11 +417,11 @@ const INITIAL_RESPONSES: DonationResponse[] = [
   },
   {
     id: 'resp_2',
-    requestId: 'req_2',
+    requestId: 'REQ-8288',
     donorId: 'donor_1',
     donorName: 'Arjun Sharma',
     donorPhone: '+919876543210',
-    donorBloodGroup: 'O+',
+    donorBloodGroup: 'A+',
     donorTrustScore: 98.5,
     status: 'donated',
     notifiedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
@@ -321,24 +435,24 @@ const INITIAL_RESPONSES: DonationResponse[] = [
 
 const INITIAL_INVENTORY: Record<string, BloodInventoryItem[]> = {
   hospital_1: [
-    { bloodGroup: 'A+', unitsAvailable: 12, lowStockThreshold: 4 },
-    { bloodGroup: 'A-', unitsAvailable: 1, lowStockThreshold: 2 },
-    { bloodGroup: 'B+', unitsAvailable: 15, lowStockThreshold: 4 },
-    { bloodGroup: 'B-', unitsAvailable: 3, lowStockThreshold: 2 },
-    { bloodGroup: 'AB+', unitsAvailable: 8, lowStockThreshold: 2 },
-    { bloodGroup: 'AB-', unitsAvailable: 0, lowStockThreshold: 1 },
-    { bloodGroup: 'O+', unitsAvailable: 5, lowStockThreshold: 4 },
-    { bloodGroup: 'O-', unitsAvailable: 2, lowStockThreshold: 2 },
+    { bloodGroup: 'A+', unitsAvailable: 42, lowStockThreshold: 15 },
+    { bloodGroup: 'A-', unitsAvailable: 12, lowStockThreshold: 15 },
+    { bloodGroup: 'B+', unitsAvailable: 38, lowStockThreshold: 15 },
+    { bloodGroup: 'B-', unitsAvailable: 3, lowStockThreshold: 5 },
+    { bloodGroup: 'AB+', unitsAvailable: 18, lowStockThreshold: 15 },
+    { bloodGroup: 'AB-', unitsAvailable: 8, lowStockThreshold: 10 },
+    { bloodGroup: 'O+', unitsAvailable: 56, lowStockThreshold: 15 },
+    { bloodGroup: 'O-', unitsAvailable: 2, lowStockThreshold: 5 },
   ],
   hospital_2: [
-    { bloodGroup: 'A+', unitsAvailable: 8, lowStockThreshold: 4 },
-    { bloodGroup: 'A-', unitsAvailable: 4, lowStockThreshold: 2 },
-    { bloodGroup: 'B+', unitsAvailable: 6, lowStockThreshold: 4 },
-    { bloodGroup: 'B-', unitsAvailable: 2, lowStockThreshold: 2 },
-    { bloodGroup: 'AB+', unitsAvailable: 4, lowStockThreshold: 2 },
-    { bloodGroup: 'AB-', unitsAvailable: 2, lowStockThreshold: 1 },
-    { bloodGroup: 'O+', unitsAvailable: 1, lowStockThreshold: 4 },
-    { bloodGroup: 'O-', unitsAvailable: 0, lowStockThreshold: 2 },
+    { bloodGroup: 'O+', unitsAvailable: 12, lowStockThreshold: 15 },
+    { bloodGroup: 'A+', unitsAvailable: 28, lowStockThreshold: 30 },
+    { bloodGroup: 'B+', unitsAvailable: 54, lowStockThreshold: 20 },
+    { bloodGroup: 'AB+', unitsAvailable: 41, lowStockThreshold: 20 },
+    { bloodGroup: 'O-', unitsAvailable: 8, lowStockThreshold: 10 },
+    { bloodGroup: 'A-', unitsAvailable: 38, lowStockThreshold: 20 },
+    { bloodGroup: 'B-', unitsAvailable: 19, lowStockThreshold: 20 },
+    { bloodGroup: 'AB-', unitsAvailable: 32, lowStockThreshold: 20 },
   ]
 };
 
@@ -377,14 +491,26 @@ class ApiService {
   private activeUser: { id: string; role: 'donor' | 'hospital' | 'admin' } | null;
 
   constructor() {
-    this.donors = loadData('donors', INITIAL_DONORS);
+    let loadedDonors = loadData('donors', INITIAL_DONORS);
+    if (!loadedDonors.some(d => d.fullName === 'Julianne Dorsey')) {
+      localStorage.removeItem('redaid_donors');
+      localStorage.removeItem('redaid_hospitals');
+      localStorage.removeItem('redaid_requests');
+      localStorage.removeItem('redaid_responses');
+      localStorage.removeItem('redaid_inventory');
+      localStorage.removeItem('redaid_surplus');
+      localStorage.removeItem('redaid_audit_logs');
+      localStorage.removeItem('redaid_active_user');
+      loadedDonors = INITIAL_DONORS;
+    }
+    this.donors = loadedDonors;
     this.hospitals = loadData('hospitals', INITIAL_HOSPITALS);
     this.requests = loadData('requests', INITIAL_REQUESTS);
     this.responses = loadData('responses', INITIAL_RESPONSES);
     this.inventory = loadData('inventory', INITIAL_INVENTORY);
     this.surplus = loadData('surplus', INITIAL_SURPLUS);
     this.auditLogs = loadData('audit_logs', []);
-    this.activeUser = loadData('active_user', { id: 'donor_1', role: 'donor' }); // Default logged in user
+    this.activeUser = loadData('active_user', { id: 'hospital_1', role: 'hospital' }); // Default logged in user to hospital_1 for testing
   }
 
   private persist() {
@@ -663,6 +789,33 @@ class ApiService {
     const hosp = this.hospitals.find(h => h.id === id);
     if (!hosp) throw new Error('Hospital profile not found');
     return this.delay(hosp);
+  }
+
+  updateHospitalProfile(fields: Partial<Hospital>) {
+    if (!this.activeUser || this.activeUser.role !== 'hospital') throw new Error('Unauthorized');
+    this.hospitals = this.hospitals.map(h => {
+      if (h.id === this.activeUser!.id) {
+        const updated = { ...h, ...fields };
+        this.log('hospital.update_profile', 'hospital', h.id, fields);
+        return updated;
+      }
+      return h;
+    });
+    this.persist();
+    return this.getHospitalProfile();
+  }
+
+  updateDonor(donorId: string, fields: Partial<Donor>) {
+    this.donors = this.donors.map(d => {
+      if (d.id === donorId) {
+        const updated = { ...d, ...fields };
+        this.log('donor.update_by_hospital', 'donor', d.id, fields);
+        return updated;
+      }
+      return d;
+    });
+    this.persist();
+    return this.delay(this.donors.find(d => d.id === donorId)!);
   }
 
   getHospitalInventory() {
