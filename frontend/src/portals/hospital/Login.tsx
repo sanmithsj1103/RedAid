@@ -33,8 +33,8 @@ export const HospitalLogin: React.FC = () => {
     setError('');
     setLoading(true);
     try {
-      // Authenticate with mock api
-      await api.login(email, 'hospital');
+      // Authenticate with backend API
+      await api.login(email, 'hospital', password);
       navigate('/hospital');
     } catch (err: any) {
       setError(err.message || 'Login failed. Please verify credentials.');
@@ -44,16 +44,7 @@ export const HospitalLogin: React.FC = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    setLoading(true);
-    try {
-      // Sign in as default hospital
-      await api.login('logistics@stjude.medical', 'hospital');
-      navigate('/hospital');
-    } catch (err) {
-      setError('Google Sign In failed.');
-    } finally {
-      setLoading(false);
-    }
+    setError('Google Sign-In is not yet configured. Please use email/password login.');
   };
 
   return (

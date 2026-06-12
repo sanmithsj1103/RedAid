@@ -21,6 +21,7 @@ export const DonorRequestDetail: React.FC = () => {
     if (!requestId) return;
     setLoading(true);
     try {
+<<<<<<< HEAD
       const req = await api.getBloodRequestById(requestId);
       if (req) {
         setRequest(req);
@@ -28,6 +29,65 @@ export const DonorRequestDetail: React.FC = () => {
         setResponse(resp);
       } else {
         setToast({ message: 'Request details could not be found.', type: 'error' });
+=======
+      const donorNotifications = await api.getDonorNotifications();
+      // Backend returns joined data: each notification has bloodRequests (joined) and flat fields
+      const match = donorNotifications.find((n: any) => {
+        const reqId = n.requestId || n.request_id || n.bloodRequests?.id || n.request?.id;
+        return reqId === requestId;
+      });
+      if (match) {
+        // Transform the backend shape into the component's expected shape
+        const req = match.bloodRequests || match.request;
+        if (req) {
+          // Build a BloodRequest-like object from joined data
+          const hospital = req.hospitals || {};
+          const requestObj = {
+            id: req.id,
+            hospitalId: req.hospitalId || req.hospital_id,
+            hospitalName: hospital.name || '',
+            hospitalPhone: hospital.phone || '',
+            hospitalAddress: hospital.address || '',
+            hospitalLocation: hospital.location || { lat: 0, lng: 0, city: hospital.city || '' },
+            bloodGroup: req.bloodGroup || req.blood_group,
+            unitsRequired: req.unitsRequired || req.units_required || 0,
+            unitsFulfilled: req.unitsFulfilled || req.units_fulfilled || 0,
+            priority: req.priority,
+            status: req.status,
+            notes: req.notes || '',
+            searchRadiusKm: req.searchRadiusKm || 15,
+            donorsNotified: req.donorsNotified || 0,
+            donorsAccepted: req.donorsAccepted || 0,
+            expiresAt: req.expiresAt || req.expires_at || '',
+            createdAt: req.createdAt || req.created_at || '',
+          };
+          setRequest(requestObj as any);
+          // The response (donation_response) is the notification itself
+          setResponse({
+            id: match.id,
+            requestId: requestObj.id,
+            donorId: match.donorId || match.donor_id || '',
+            donorName: match.donorName || '',
+            donorPhone: match.donorPhone || '',
+            donorBloodGroup: match.donorBloodGroup || match.donor_blood_group || '',
+            donorTrustScore: match.donorTrustScore || 0,
+            status: match.status,
+            notifiedAt: match.notifiedAt || match.notified_at || '',
+            respondedAt: match.respondedAt,
+            arrivedAt: match.arrivedAt,
+            donatedAt: match.donatedAt,
+          } as any);
+        }
+      } else {
+        // Fallback for checking directly active requests
+        const active = await api.getDonorActiveRequest();
+        if (active && (active.request?.id === requestId || active.requestId === requestId)) {
+          setRequest(active.request || null);
+          setResponse(active.response || active);
+        } else {
+          setToast({ message: 'Request not found', type: 'error' });
+        }
+>>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
       }
     } catch (err) {
       console.error(err);
@@ -71,6 +131,33 @@ export const DonorRequestDetail: React.FC = () => {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const handleUpdateStatus = async (status: 'en_route' | 'arrived') => {
+    if (!response) return;
+    setActionLoading(true);
+    try {
+      await api.updateDonorResponseStatus(response.id, status);
+      setToast({
+        message: status === 'en_route' ? 'Status updated to: En Route!' : 'You have arrived at the hospital!',
+        type: 'success'
+      });
+      setTimeout(fetchDetail, 1000);
+    } catch (err: any) {
+      setToast({ message: err.message || 'Action failed', type: 'error' });
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Note: In production, donation completion is handled by the hospital.
+  // This is kept for development/testing only.
+  const handleSimulateCompletion = async () => {
+    if (!response || !requestId) return;
+    setToast({ message: 'Waiting for hospital staff to verify your donation...', type: 'info' });
+  };
+
+>>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fcf9f8] flex items-center justify-center max-w-md mx-auto border-x border-[#eae7e7]">

@@ -1,6 +1,10 @@
-// RedAid Frontend Mock API Service Layer
+// RedAid Frontend API Service — Real Backend Integration
+// Connects to Express backend at API_BASE_URL
 
-// --- Types ---
+// ─── Configuration ───────────────────────────────────────
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/v1';
+
+// ─── Types ───────────────────────────────────────────────
 export interface Location {
   lat: number;
   lng: number;
@@ -112,6 +116,7 @@ export interface AuditLog {
   createdAt: string;
 }
 
+<<<<<<< HEAD
 // --- Initial Mock Data ---
 const INITIAL_DONORS: Donor[] = [
   {
@@ -265,251 +270,135 @@ const INITIAL_DONORS: Donor[] = [
     healthDeclaration: { noTattoosRecent: true, noMedicationRecent: true, generalFitness: true },
     isVerified: true,
     isBlacklisted: false,
+=======
+// ─── Utility: snake_case ↔ camelCase ─────────────────────
+
+function snakeToCamel(str: string): string {
+  return str.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+}
+
+function camelToSnake(str: string): string {
+  return str.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
+}
+
+function convertKeysToCamel(obj: any): any {
+  if (Array.isArray(obj)) return obj.map(convertKeysToCamel);
+  if (obj !== null && typeof obj === 'object' && !(obj instanceof Date)) {
+    return Object.entries(obj).reduce((acc, [key, val]) => {
+      acc[snakeToCamel(key)] = convertKeysToCamel(val);
+      return acc;
+    }, {} as Record<string, any>);
+>>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
   }
-];
+  return obj;
+}
 
-const INITIAL_HOSPITALS: Hospital[] = [
-  {
-    id: 'hospital_1',
-    name: 'Manipal Hospital Whitefield',
-    registrationNumber: 'KA-BLR-2015-0982',
-    phone: '+918025024444',
-    email: 'info.wf@manipalhospitals.com',
-    address: 'ITPL Main Road, Whitefield, Bengaluru',
-    location: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
-    isVerified: true,
-    isActive: true,
-  },
-  {
-    id: 'hospital_2',
-    name: 'St. Jude Medical',
-    registrationNumber: 'KA-BLR-2012-0451',
-    phone: '+918026304050',
-    email: 'admin.jn@apollohospitals.com',
-    address: '21st Main Road, Jayanagar 1st Block, Bengaluru',
-    location: { lat: 12.9304, lng: 77.5794, city: 'Bengaluru' },
-    isVerified: true,
-    isActive: true,
-  },
-  {
-    id: 'hospital_3',
-    name: 'Narayana Health HSR',
-    registrationNumber: 'KA-BLR-2018-1122',
-    phone: '+918049303000',
-    email: 'contact.hsr@narayanahealth.org',
-    address: 'HSR Layout Sector 3, Bengaluru',
-    location: { lat: 12.9141, lng: 77.6413, city: 'Bengaluru' },
-    isVerified: false,
-    isActive: true,
+function convertKeysToSnake(obj: any): any {
+  if (Array.isArray(obj)) return obj.map(convertKeysToSnake);
+  if (obj !== null && typeof obj === 'object' && !(obj instanceof Date)) {
+    return Object.entries(obj).reduce((acc, [key, val]) => {
+      acc[camelToSnake(key)] = convertKeysToSnake(val);
+      return acc;
+    }, {} as Record<string, any>);
   }
-];
+  return obj;
+}
 
-const INITIAL_REQUESTS: BloodRequest[] = [
-  {
-    id: 'REQ-8291',
-    hospitalId: 'hospital_1',
-    hospitalName: 'Manipal Hospital Whitefield',
-    hospitalPhone: '+918025024444',
-    hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
-    hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
-    bloodGroup: 'O-',
-    unitsRequired: 4,
-    unitsFulfilled: 0,
-    priority: 'critical',
-    status: 'dispatched',
-    notes: 'Emergency trauma transfusion. High risk blood group matched outreach required.',
-    searchRadiusKm: 15,
-    donorsNotified: 124,
-    donorsAccepted: 2,
-    expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - 2 * 60 * 1000).toISOString(), // 2 mins ago
-  },
-  {
-    id: 'REQ-8290',
-    hospitalId: 'hospital_1',
-    hospitalName: 'Manipal Hospital Whitefield',
-    hospitalPhone: '+918025024444',
-    hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
-    hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
-    bloodGroup: 'AB+',
-    unitsRequired: 2,
-    unitsFulfilled: 0,
-    priority: 'urgent',
-    status: 'en_route',
-    notes: 'Urgent post-partum hemorrhage support.',
-    searchRadiusKm: 15,
-    donorsNotified: 34,
-    donorsAccepted: 1,
-    expiresAt: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 mins ago
-  },
-  {
-    id: 'REQ-8288',
-    hospitalId: 'hospital_1',
-    hospitalName: 'Manipal Hospital Whitefield',
-    hospitalPhone: '+918025024444',
-    hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
-    hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
-    bloodGroup: 'A+',
-    unitsRequired: 2,
-    unitsFulfilled: 2,
-    priority: 'scheduled',
-    status: 'completed',
-    notes: 'Planned hip arthroplasty surgery. Units reserved and verified successfully.',
-    searchRadiusKm: 15,
-    donorsNotified: 45,
-    donorsAccepted: 2,
-    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-  },
-  {
-    id: 'REQ-8285',
-    hospitalId: 'hospital_1',
-    hospitalName: 'Manipal Hospital Whitefield',
-    hospitalPhone: '+918025024444',
-    hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
-    hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
-    bloodGroup: 'B-',
-    unitsRequired: 1,
-    unitsFulfilled: 0,
-    priority: 'critical',
-    status: 'dispatched',
-    notes: 'Neonate ICU compatibility match requested immediately.',
-    searchRadiusKm: 15,
-    donorsNotified: 88,
-    donorsAccepted: 0,
-    expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
-  },
-  {
-    id: 'REQ-8280',
-    hospitalId: 'hospital_1',
-    hospitalName: 'Manipal Hospital Whitefield',
-    hospitalPhone: '+918025024444',
-    hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
-    hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
-    bloodGroup: 'AB+',
-    unitsRequired: 3,
-    unitsFulfilled: 0,
-    priority: 'scheduled',
-    status: 'cancelled',
-    notes: 'Scheduled bypass cancelled by primary physician.',
-    searchRadiusKm: 15,
-    donorsNotified: 12,
-    donorsAccepted: 0,
-    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-  },
-  {
-    id: 'REQ-8275',
-    hospitalId: 'hospital_1',
-    hospitalName: 'Manipal Hospital Whitefield',
-    hospitalPhone: '+918025024444',
-    hospitalAddress: 'ITPL Main Road, Whitefield, Bengaluru',
-    hospitalLocation: { lat: 12.9698, lng: 77.7499, city: 'Bengaluru' },
-    bloodGroup: 'O+',
-    unitsRequired: 5,
-    unitsFulfilled: 0,
-    priority: 'critical',
-    status: 'dispatched',
-    notes: 'Multivehicle collision emergency room mass transfusion.',
-    searchRadiusKm: 15,
-    donorsNotified: 210,
-    donorsAccepted: 4,
-    expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+// ─── Utility: PostGIS EWKB Point parser ─────────────────
+// PostGIS returns geography as EWKB hex. For a 2D point (SRID 4326):
+// Byte order(1) + WKB type(4) + SRID(4) + X/lon(8) + Y/lat(8) = 25 bytes = 50 hex chars
+function parseEwkbPoint(hex: string): { lat: number; lng: number } | null {
+  if (!hex || hex.length < 50) return null;
+  try {
+    // Detect byte order: 01 = little-endian, 00 = big-endian
+    const byteOrder = hex.substring(0, 2);
+    const isLE = byteOrder === '01';
+    // Skip byte_order(2) + type(8) + srid(8) = 18 hex chars
+    const coordHex = hex.substring(18);
+    const lonHex = coordHex.substring(0, 16);
+    const latHex = coordHex.substring(16, 32);
+
+    function hexToFloat64(h: string, littleEndian: boolean): number {
+      const bytes = new Uint8Array(8);
+      for (let i = 0; i < 8; i++) {
+        bytes[i] = parseInt(h.substring(i * 2, i * 2 + 2), 16);
+      }
+      const buf = new ArrayBuffer(8);
+      const view = new DataView(buf);
+      if (littleEndian) {
+        for (let i = 0; i < 8; i++) view.setUint8(i, bytes[i]);
+      } else {
+        for (let i = 0; i < 8; i++) view.setUint8(i, bytes[i]);
+      }
+      return view.getFloat64(0, littleEndian);
+    }
+
+    const lng = hexToFloat64(lonHex, isLE);
+    const lat = hexToFloat64(latHex, isLE);
+    return { lat, lng };
+  } catch {
+    return null;
   }
-];
+}
 
-const INITIAL_RESPONSES: DonationResponse[] = [
-  {
-    id: 'resp_1',
-    requestId: 'REQ-8291',
-    donorId: 'donor_2',
-    donorName: 'Priya Patel',
-    donorPhone: '+919876543211',
-    donorBloodGroup: 'O-',
-    donorTrustScore: 100,
-    status: 'accepted',
-    notifiedAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-    respondedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-  },
-  {
-    id: 'resp_2',
-    requestId: 'REQ-8288',
-    donorId: 'donor_1',
-    donorName: 'Arjun Sharma',
-    donorPhone: '+919876543210',
-    donorBloodGroup: 'A+',
-    donorTrustScore: 98.5,
-    status: 'donated',
-    notifiedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    respondedAt: new Date(Date.now() - 110 * 60 * 1000).toISOString(),
-    arrivedAt: new Date(Date.now() - 80 * 60 * 1000).toISOString(),
-    donatedAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
-    hospitalRating: 5,
-    hospitalFeedback: 'Extremely polite, donor arrived within 25 minutes of acceptance!',
+// ─── Utility: Transform DB row into frontend-friendly shape ──
+
+function transformDonorRow(row: any): any {
+  if (!row) return row;
+  // Parse location from PostGIS
+  if (row.location && typeof row.location === 'string') {
+    const coords = parseEwkbPoint(row.location);
+    if (coords) {
+      row.location = { ...coords, city: row.city || '', address: row.address || '' };
+    }
   }
-];
-
-const INITIAL_INVENTORY: Record<string, BloodInventoryItem[]> = {
-  hospital_1: [
-    { bloodGroup: 'A+', unitsAvailable: 42, lowStockThreshold: 15 },
-    { bloodGroup: 'A-', unitsAvailable: 12, lowStockThreshold: 15 },
-    { bloodGroup: 'B+', unitsAvailable: 38, lowStockThreshold: 15 },
-    { bloodGroup: 'B-', unitsAvailable: 3, lowStockThreshold: 5 },
-    { bloodGroup: 'AB+', unitsAvailable: 18, lowStockThreshold: 15 },
-    { bloodGroup: 'AB-', unitsAvailable: 8, lowStockThreshold: 10 },
-    { bloodGroup: 'O+', unitsAvailable: 56, lowStockThreshold: 15 },
-    { bloodGroup: 'O-', unitsAvailable: 2, lowStockThreshold: 5 },
-  ],
-  hospital_2: [
-    { bloodGroup: 'O+', unitsAvailable: 12, lowStockThreshold: 15 },
-    { bloodGroup: 'A+', unitsAvailable: 28, lowStockThreshold: 30 },
-    { bloodGroup: 'B+', unitsAvailable: 54, lowStockThreshold: 20 },
-    { bloodGroup: 'AB+', unitsAvailable: 41, lowStockThreshold: 20 },
-    { bloodGroup: 'O-', unitsAvailable: 8, lowStockThreshold: 10 },
-    { bloodGroup: 'A-', unitsAvailable: 38, lowStockThreshold: 20 },
-    { bloodGroup: 'B-', unitsAvailable: 19, lowStockThreshold: 20 },
-    { bloodGroup: 'AB-', unitsAvailable: 32, lowStockThreshold: 20 },
-  ]
-};
-
-const INITIAL_SURPLUS: HospitalSurplus[] = [
-  {
-    id: 'sur_1',
-    hospitalId: 'hospital_1',
-    hospitalName: 'Manipal Hospital Whitefield',
-    bloodGroup: 'B+',
-    unitsAvailable: 6,
-    expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
-    isClaimed: false,
-    createdAt: new Date().toISOString(),
+  // Map badges from array of badge objects to array of strings
+  if (Array.isArray(row.badges)) {
+    row.badges = row.badges.map((b: any) => (typeof b === 'string' ? b : b.badgeType || b.badge_type || b));
   }
-];
+  return row;
+}
 
-// --- DB Helpers ---
-const loadData = <T>(key: string, fallback: T): T => {
-  const data = localStorage.getItem(`redaid_${key}`);
-  return data ? JSON.parse(data) : fallback;
-};
+function transformHospitalRow(row: any): any {
+  if (!row) return row;
+  if (row.location && typeof row.location === 'string') {
+    const coords = parseEwkbPoint(row.location);
+    if (coords) {
+      row.location = { ...coords, city: row.city || '', address: row.address || '' };
+    }
+  }
+  return row;
+}
 
-const saveData = <T>(key: string, val: T): void => {
-  localStorage.setItem(`redaid_${key}`, JSON.stringify(val));
-};
+function transformRequestRow(row: any): any {
+  if (!row) return row;
+  // Flatten joined hospital data if present
+  if (row.hospitals) {
+    const h = row.hospitals;
+    row.hospitalName = h.name || h.hospitalName || '';
+    row.hospitalPhone = h.phone || h.hospitalPhone || '';
+    row.hospitalAddress = h.address || h.hospitalAddress || '';
+    if (h.location && typeof h.location === 'string') {
+      const coords = parseEwkbPoint(h.location);
+      row.hospitalLocation = coords ? { ...coords, city: h.city || '' } : { lat: 0, lng: 0, city: h.city || '' };
+    } else if (h.location) {
+      row.hospitalLocation = h.location;
+    }
+    delete row.hospitals;
+  }
+  return row;
+}
 
-// --- API Implementation ---
+// ─── API Service Class ───────────────────────────────────
+
 class ApiService {
-  private donors: Donor[];
-  private hospitals: Hospital[];
-  private requests: BloodRequest[];
-  private responses: DonationResponse[];
-  private inventory: Record<string, BloodInventoryItem[]>;
-  private surplus: HospitalSurplus[];
-  private auditLogs: AuditLog[];
-  private activeUser: { id: string; role: 'donor' | 'hospital' | 'admin' } | null;
+  private accessToken: string | null = null;
+  private activeUser: { id: string; role: 'donor' | 'hospital' | 'admin' } | null = null;
+  private isRefreshing = false;
+  private refreshQueue: Array<{ resolve: (token: string) => void; reject: (err: any) => void }> = [];
 
   constructor() {
+<<<<<<< HEAD
     let loadedDonors = loadData('donors', INITIAL_DONORS);
     if (!loadedDonors.some(d => d.fullName === 'Samuel Richardson')) {
       localStorage.removeItem('redaid_donors');
@@ -584,21 +473,22 @@ class ApiService {
         this.log('auth.login', 'donor', donor.id);
         this.persist();
         return this.delay({ success: true, user: this.activeUser, profile: donor });
+=======
+    // Restore session from sessionStorage
+    const saved = sessionStorage.getItem('redaid_session');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        this.accessToken = parsed.accessToken || null;
+        this.activeUser = parsed.activeUser || null;
+      } catch {
+        sessionStorage.removeItem('redaid_session');
+>>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
       }
-      throw new Error('Donor phone number not found. Please register.');
     }
-
-    // Hospital login
-    const hospital = this.hospitals.find(h => h.phone === phone || h.email === phone);
-    if (hospital) {
-      this.activeUser = { id: hospital.id, role: 'hospital' };
-      this.log('auth.login', 'hospital', hospital.id);
-      this.persist();
-      return this.delay({ success: true, user: this.activeUser, profile: hospital });
-    }
-    throw new Error('Hospital phone/email not found. Please register.');
   }
 
+<<<<<<< HEAD
   logout() {
     if (this.activeUser) {
       this.log('auth.logout', this.activeUser.role, this.activeUser.id);
@@ -786,19 +676,20 @@ class ApiService {
         }
         return d;
       });
+=======
+  private persistSession() {
+    if (this.accessToken && this.activeUser) {
+      sessionStorage.setItem('redaid_session', JSON.stringify({
+        accessToken: this.accessToken,
+        activeUser: this.activeUser,
+      }));
+>>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
     } else {
-      this.donors = this.donors.map(d => {
-        if (d.id === this.activeUser!.id) {
-          return { ...d, totalResponses: d.totalResponses + 1 };
-        }
-        return d;
-      });
+      sessionStorage.removeItem('redaid_session');
     }
-
-    this.persist();
-    return this.delay({ success: true });
   }
 
+<<<<<<< HEAD
   updateDonorResponseStatus(responseId: string, status: 'en_route' | 'arrived' | 'donated') {
     this.responses = this.responses.map(r => {
       if (r.id === responseId) {
@@ -834,396 +725,401 @@ class ApiService {
         }
 
         return updated;
-      }
-      return r;
-    });
-    this.persist();
-    return this.delay({ success: true });
-  }
+=======
+  // ─── Core HTTP Method ──────────────────────────────────
 
-  getDonorDonationHistory() {
-    if (!this.activeUser || this.activeUser.role !== 'donor') throw new Error('Unauthorized');
-    const donatedList = this.responses.filter(r => r.donorId === this.activeUser!.id && r.status === 'donated');
-    const joined = donatedList.map(resp => {
-      const request = this.requests.find(req => req.id === resp.requestId);
-      return { response: resp, request };
-    });
-    return this.delay(joined);
-  }
-
-  // --- Hospital Portal Methods ---
-  getHospitalProfile(hospitalId?: string) {
-    const id = hospitalId || this.activeUser?.id;
-    const hosp = this.hospitals.find(h => h.id === id);
-    if (!hosp) throw new Error('Hospital profile not found');
-    return this.delay(hosp);
-  }
-
-  updateHospitalProfile(fields: Partial<Hospital>) {
-    if (!this.activeUser || this.activeUser.role !== 'hospital') throw new Error('Unauthorized');
-    this.hospitals = this.hospitals.map(h => {
-      if (h.id === this.activeUser!.id) {
-        const updated = { ...h, ...fields };
-        this.log('hospital.update_profile', 'hospital', h.id, fields);
-        return updated;
-      }
-      return h;
-    });
-    this.persist();
-    return this.getHospitalProfile();
-  }
-
-  updateDonor(donorId: string, fields: Partial<Donor>) {
-    this.donors = this.donors.map(d => {
-      if (d.id === donorId) {
-        const updated = { ...d, ...fields };
-        this.log('donor.update_by_hospital', 'donor', d.id, fields);
-        return updated;
-      }
-      return d;
-    });
-    this.persist();
-    return this.delay(this.donors.find(d => d.id === donorId)!);
-  }
-
-  getHospitalInventory() {
-    if (!this.activeUser || this.activeUser.role !== 'hospital') throw new Error('Unauthorized');
-    const items = this.inventory[this.activeUser.id] || [];
-    return this.delay(items);
-  }
-
-  updateInventoryItem(bloodGroup: BloodGroup, unitsAvailable: number) {
-    if (!this.activeUser || this.activeUser.role !== 'hospital') throw new Error('Unauthorized');
-    this.inventory[this.activeUser.id] = this.inventory[this.activeUser.id].map(item => {
-      if (item.bloodGroup === bloodGroup) {
-        this.log('hospital.update_inventory', 'blood_inventory', this.activeUser!.id, { bloodGroup, unitsAvailable });
-        return { ...item, unitsAvailable, updatedAt: new Date().toISOString() };
-      }
-      return item;
-    });
-    this.persist();
-    return this.getHospitalInventory();
-  }
-
-  createBloodRequest(data: { bloodGroup: BloodGroup; unitsRequired: number; priority: RequestPriority; notes: string }) {
-    if (!this.activeUser || this.activeUser.role !== 'hospital') throw new Error('Unauthorized');
-    const hospital = this.hospitals.find(h => h.id === this.activeUser!.id)!;
-
-    // Filter compatible, verified, active, non-blacklisted donors within 15km
-    const compatibleGroups = this.getCompatibleDonorGroups(data.bloodGroup);
-    const eligibleDonors = this.donors.filter(d => {
-      if (!d.isVerified || d.isBlacklisted || d.availability !== 'active') return false;
-      if (!compatibleGroups.includes(d.bloodGroup)) return false;
-      
-      // Auto-enforced 90-day lock
-      if (d.lastDonatedAt) {
-        const lastDonated = new Date(d.lastDonatedAt).getTime();
-        const ninetyDays = 90 * 24 * 60 * 60 * 1000;
-        if (Date.now() - lastDonated < ninetyDays) return false;
-      }
-      return true;
-    });
-
-    const newRequest: BloodRequest = {
-      id: `req_${Math.random().toString(36).substr(2, 9)}`,
-      hospitalId: hospital.id,
-      hospitalName: hospital.name,
-      hospitalPhone: hospital.phone,
-      hospitalAddress: hospital.address,
-      hospitalLocation: hospital.location,
-      bloodGroup: data.bloodGroup,
-      unitsRequired: data.unitsRequired,
-      unitsFulfilled: 0,
-      priority: data.priority,
-      status: 'dispatched',
-      notes: data.notes,
-      searchRadiusKm: 15,
-      donorsNotified: eligibleDonors.length,
-      donorsAccepted: 0,
-      expiresAt: new Date(Date.now() + (data.priority === 'critical' ? 2 : data.priority === 'urgent' ? 6 : 24) * 60 * 60 * 1000).toISOString(),
-      createdAt: new Date().toISOString(),
+  private async request<T>(
+    method: string,
+    path: string,
+    body?: any,
+    options: { skipAuth?: boolean; rawResponse?: boolean } = {}
+  ): Promise<T> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
     };
 
-    this.requests.unshift(newRequest);
-    this.log('request.created', 'blood_requests', newRequest.id, data);
+    if (!options.skipAuth && this.accessToken) {
+      headers['Authorization'] = `Bearer ${this.accessToken}`;
+    }
 
-    // Create donation_responses entries for matched donors to notify them
-    eligibleDonors.forEach(donor => {
-      const resp: DonationResponse = {
-        id: `resp_${Math.random().toString(36).substr(2, 9)}`,
-        requestId: newRequest.id,
-        donorId: donor.id,
-        donorName: donor.fullName,
-        donorPhone: donor.phone,
-        donorBloodGroup: donor.bloodGroup,
-        donorTrustScore: donor.trustScore,
-        status: 'notified',
-        notifiedAt: new Date().toISOString(),
-      };
-      this.responses.push(resp);
+    const url = `${API_BASE_URL}${path}`;
+
+    const res = await fetch(url, {
+      method,
+      headers,
+      credentials: 'include', // Send cookies for refresh token
+      body: body ? JSON.stringify(convertKeysToSnake(body)) : undefined,
     });
 
-    this.persist();
-    return this.delay(newRequest);
+    // Handle 401 — attempt silent token refresh
+    if (res.status === 401 && !options.skipAuth && !path.includes('/auth/refresh')) {
+      const newToken = await this.refreshAccessToken();
+      if (newToken) {
+        // Retry original request with new token
+        headers['Authorization'] = `Bearer ${newToken}`;
+        const retryRes = await fetch(url, {
+          method,
+          headers,
+          credentials: 'include',
+          body: body ? JSON.stringify(convertKeysToSnake(body)) : undefined,
+        });
+
+        if (!retryRes.ok) {
+          const errData = await retryRes.json().catch(() => ({}));
+          throw new Error(errData.message || errData.error || `Request failed: ${retryRes.status}`);
+        }
+
+        const retryJson = await retryRes.json();
+        return options.rawResponse ? retryJson : convertKeysToCamel(retryJson);
+>>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
+      }
+      // Refresh failed — clear session
+      this.accessToken = null;
+      this.activeUser = null;
+      this.persistSession();
+      throw new Error('Session expired. Please log in again.');
+    }
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      const errMsg = errData.error?.message || errData.message || (typeof errData.error === 'string' ? errData.error : null) || `Request failed: ${res.status}`;
+      throw new Error(errMsg);
+    }
+
+    const json = await res.json();
+    return options.rawResponse ? json : convertKeysToCamel(json);
   }
 
-  getHospitalRequests() {
-    if (!this.activeUser || this.activeUser.role !== 'hospital') throw new Error('Unauthorized');
-    const list = this.requests.filter(r => r.hospitalId === this.activeUser!.id);
-    return this.delay(list);
+  private async refreshAccessToken(): Promise<string | null> {
+    if (this.isRefreshing) {
+      return new Promise((resolve, reject) => {
+        this.refreshQueue.push({ resolve, reject });
+      });
+    }
+
+    this.isRefreshing = true;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        this.refreshQueue.forEach(({ reject }) => reject(new Error('Refresh failed')));
+        this.refreshQueue = [];
+        return null;
+      }
+
+      const data = await res.json();
+      this.accessToken = data.access_token;
+      this.persistSession();
+
+      // Resolve queued requests
+      this.refreshQueue.forEach(({ resolve }) => resolve(this.accessToken!));
+      this.refreshQueue = [];
+
+      return this.accessToken;
+    } catch {
+      this.refreshQueue.forEach(({ reject }) => reject(new Error('Refresh failed')));
+      this.refreshQueue = [];
+      return null;
+    } finally {
+      this.isRefreshing = false;
+    }
   }
 
-  cancelRequest(requestId: string) {
-    this.requests = this.requests.map(r => {
-      if (r.id === requestId) {
-        this.log('request.cancelled', 'blood_requests', requestId);
-        return { ...r, status: 'cancelled' as RequestStatus };
-      }
-      return r;
-    });
-    // Cancel any active donation responses
-    this.responses = this.responses.map(resp => {
-      if (resp.requestId === requestId && (resp.status === 'notified' || resp.status === 'accepted' || resp.status === 'en_route')) {
-        return { ...resp, status: 'cancelled' as ResponseStatus };
-      }
-      return resp;
-    });
-    this.persist();
-    return this.delay({ success: true });
+  // ─── Session Methods ───────────────────────────────────
+
+  getActiveUser() {
+    return Promise.resolve(this.activeUser);
   }
 
-  getLiveRequestTracker(requestId: string) {
-    const request = this.requests.find(r => r.id === requestId);
-    if (!request) throw new Error('Request not found');
+  async login(emailOrPhone: string, role: 'donor' | 'hospital' | 'admin', password?: string) {
+    const body: Record<string, string> = {};
 
-    const notifiedDonors = this.responses.filter(r => r.requestId === requestId);
-    return this.delay({ request, responses: notifiedDonors });
+    if (role === 'admin') {
+      body.email = 'sanmith-admin@gmail.com';
+      body.password = password || emailOrPhone;
+    } else if (role === 'hospital') {
+      body.email = emailOrPhone;
+      body.password = password || '';
+    } else {
+      // Donor login uses phone+password
+      body.phone = emailOrPhone;
+      body.password = password || '';
+    }
+
+    const res: any = await this.request('POST', '/auth/login', body, { skipAuth: true, rawResponse: true });
+
+    this.accessToken = res.access_token;
+    this.activeUser = {
+      id: res.entity_id || res.entityId || '',
+      role: (res.role as 'donor' | 'hospital' | 'admin') || role,
+    };
+    this.persistSession();
+
+    return { success: true, user: this.activeUser };
   }
 
-  markDonationComplete(responseId: string) {
-    let donorId = '';
-    let requestId = '';
-    let donorBlood = '';
-
-    this.responses = this.responses.map(r => {
-      if (r.id === responseId) {
-        donorId = r.donorId;
-        requestId = r.requestId;
-        donorBlood = r.donorBloodGroup;
-        return { ...r, status: 'donated' as ResponseStatus, donatedAt: new Date().toISOString() };
-      }
-      return r;
-    });
-
-    // Update donor attributes (Eligibility lock, donation count, trust score)
-    this.donors = this.donors.map(d => {
-      if (d.id === donorId) {
-        const totalDons = d.totalDonations + 1;
-        const currentScore = d.trustScore;
-        // Increase trust score on successful donation up to 100
-        const newScore = Math.min(100, currentScore + 2.5);
-        
-        // Award badge triggers
-        const badges = [...d.badges];
-        if (totalDons === 1 && !badges.includes('first_donation')) badges.push('first_donation');
-        if (totalDons === 5 && !badges.includes('streak_5')) badges.push('streak_5');
-        if (totalDons === 10 && !badges.includes('veteran')) badges.push('veteran');
-
-        return {
-          ...d,
-          totalDonations: totalDons,
-          trustScore: newScore,
-          lastDonatedAt: new Date().toISOString(),
-          badges,
-        };
-      }
-      return d;
-    });
-
-    // Update request units fulfilled
-    this.requests = this.requests.map(req => {
-      if (req.id === requestId) {
-        const fulfilled = req.unitsFulfilled + 1;
-        const newStatus = fulfilled >= req.unitsRequired ? 'completed' : req.status;
-        return { ...req, unitsFulfilled: fulfilled, status: newStatus as RequestStatus };
-      }
-      return req;
-    });
-
-    this.log('donation.completed', 'donation_responses', responseId, { donorId, requestId });
-    this.persist();
-    return this.delay({ success: true });
+  async logout() {
+    try {
+      await this.request('POST', '/auth/logout', undefined, { skipAuth: true });
+    } catch {
+      // Logout should always succeed client-side
+    }
+    this.accessToken = null;
+    this.activeUser = null;
+    this.persistSession();
+    return { success: true };
   }
 
-  markDonorNoShow(responseId: string) {
-    let donorId = '';
-    this.responses = this.responses.map(r => {
-      if (r.id === responseId) {
-        donorId = r.donorId;
-        return { ...r, status: 'no_show' as ResponseStatus };
-      }
-      return r;
-    });
-
-    // Reduce donor trust score for no show
-    this.donors = this.donors.map(d => {
-      if (d.id === donorId) {
-        const newScore = Math.max(0, d.trustScore - 15); // Strict penalty for no-shows
-        return { ...d, trustScore: newScore };
-      }
-      return d;
-    });
-
-    this.log('donation.no_show', 'donation_responses', responseId, { donorId });
-    this.persist();
-    return this.delay({ success: true });
+  async sendOtp(phone: string) {
+    return this.request<{ message: string }>('POST', '/auth/otp/send', { phone }, { skipAuth: true });
   }
 
-  submitDonorFeedback(responseId: string, rating: number, feedback: string) {
-    this.responses = this.responses.map(r => {
-      if (r.id === responseId) {
-        return { ...r, hospitalRating: rating, hospitalFeedback: feedback };
-      }
-      return r;
-    });
-    this.log('hospital.feedback_submitted', 'donation_responses', responseId, { rating, feedback });
-    this.persist();
-    return this.delay({ success: true });
+  async verifyOtp(phone: string, code: string) {
+    const res: any = await this.request('POST', '/auth/otp/verify', { phone, token: code }, { skipAuth: true, rawResponse: true });
+
+    if (res.is_new_user || res.isNewUser) {
+      // New user — store temp token for registration
+      this.accessToken = res.access_token;
+      this.persistSession();
+      return { success: true, isNewUser: true };
+    }
+
+    // Existing user — session established
+    this.accessToken = res.access_token;
+    this.activeUser = {
+      id: res.entity_id || '',
+      role: (res.role as 'donor' | 'hospital' | 'admin') || 'donor',
+    };
+    this.persistSession();
+    return { success: true, isNewUser: false, user: this.activeUser };
   }
 
-  getSurplusBloodListings() {
-    return this.delay(this.surplus);
+  // ─── Registration Methods ──────────────────────────────
+
+  async registerDonor(data: any) {
+    const res: any = await this.request('POST', '/auth/donor/register', data);
+    // After registration, the user must re-verify OTP to get updated token with role
+    return { success: true, donorId: res.donorId || res.data?.donorId, role: 'donor' };
   }
 
-  publishSurplusBlood(bloodGroup: BloodGroup, unitsAvailable: number, hoursValid: number) {
-    if (!this.activeUser || this.activeUser.role !== 'hospital') throw new Error('Unauthorized');
-    const hospital = this.hospitals.find(h => h.id === this.activeUser!.id)!;
+  async registerHospital(data: any) {
+    const res: any = await this.request('POST', '/auth/hospital/register', data);
+    return { success: true, hospitalId: res.hospitalId || res.data?.hospitalId, role: 'hospital', isVerified: false };
+  }
 
-    const newSurplus: HospitalSurplus = {
-      id: `sur_${Math.random().toString(36).substr(2, 9)}`,
-      hospitalId: hospital.id,
-      hospitalName: hospital.name,
+  // ─── Donor Portal Methods ──────────────────────────────
+
+  async getDonorProfile(donorId?: string) {
+    const res: any = await this.request('GET', '/donor/profile');
+    return transformDonorRow(res.data || res);
+  }
+
+  async updateDonorProfile(fields: Partial<Donor>) {
+    const res: any = await this.request('PATCH', '/donor/profile', fields);
+    return transformDonorRow(res.data || res);
+  }
+
+  async setAvailability(status: AvailabilityStatus, snoozeUntil: string | null = null) {
+    const body: any = { availability: status };
+    if (snoozeUntil) body.snoozeUntil = snoozeUntil;
+    const res: any = await this.request('PATCH', '/donor/availability', body);
+    return transformDonorRow(res.data || res);
+  }
+
+  async getDonorActiveRequest() {
+    const res: any = await this.request('GET', '/donor/requests/active');
+    const data = res.data;
+    if (!data) return null;
+    return data;
+  }
+
+  async getDonorNotifications() {
+    const res: any = await this.request('GET', '/donor/notifications');
+    return res.data || [];
+  }
+
+  async respondToRequest(responseId: string, action: 'accept' | 'decline') {
+    const res: any = await this.request('PATCH', `/donor/requests/${responseId}/respond`, { action });
+    return { success: true, ...res };
+  }
+
+  async updateDonorResponseStatus(responseId: string, status: 'en_route' | 'arrived') {
+    const res: any = await this.request('PATCH', `/donor/requests/${responseId}/status`, { status });
+    return { success: true, ...res };
+  }
+
+  async getDonorDonationHistory() {
+    const res: any = await this.request('GET', '/donor/history');
+    return res.data || [];
+  }
+
+  async getDonorBadges() {
+    const res: any = await this.request('GET', '/donor/badges');
+    return res.data || {};
+  }
+
+  async deleteDonorAccount() {
+    const res: any = await this.request('DELETE', '/donor/account');
+    this.accessToken = null;
+    this.activeUser = null;
+    this.persistSession();
+    return { success: true, ...res };
+  }
+
+  // ─── Hospital Portal Methods ───────────────────────────
+
+  async getHospitalProfile(hospitalId?: string) {
+    const res: any = await this.request('GET', '/hospital/profile');
+    return transformHospitalRow(res.data || res);
+  }
+
+  async updateHospitalProfile(fields: Partial<Hospital>) {
+    const res: any = await this.request('PATCH', '/hospital/profile', fields);
+    return transformHospitalRow(res.data || res);
+  }
+
+  async updateDonor(donorId: string, fields: Partial<Donor>) {
+    // Admin-level operation through admin routes
+    const res: any = await this.request('PATCH', `/admin/donors/${donorId}/verify`, fields);
+    return res.data || res;
+  }
+
+  async getHospitalInventory() {
+    const res: any = await this.request('GET', '/hospital/inventory');
+    return res.data || [];
+  }
+
+  async updateInventoryItem(bloodGroup: BloodGroup, unitsAvailable: number) {
+    const encoded = encodeURIComponent(bloodGroup);
+    const res: any = await this.request('PATCH', `/hospital/inventory/${encoded}`, { unitsAvailable });
+    return res.data || [];
+  }
+
+  async createBloodRequest(data: { bloodGroup: BloodGroup; unitsRequired: number; priority: RequestPriority; notes: string }) {
+    const res: any = await this.request('POST', '/hospital/requests', data);
+    return transformRequestRow(res.data || res);
+  }
+
+  async getHospitalRequests() {
+    const res: any = await this.request('GET', '/hospital/requests?limit=50');
+    const items = res.data || [];
+    return items.map(transformRequestRow);
+  }
+
+  async cancelRequest(requestId: string) {
+    const res: any = await this.request('PATCH', `/hospital/requests/${requestId}/cancel`);
+    return { success: true, ...res };
+  }
+
+  async getLiveRequestTracker(requestId: string) {
+    const res: any = await this.request('GET', `/hospital/requests/${requestId}`);
+    const data = res.data || res;
+    const request = transformRequestRow({ ...data });
+    // The response includes donation_responses joined as 'donationResponses' or 'responses'
+    const responses = data.donationResponses || data.responses || [];
+    return { request, responses };
+  }
+
+  async markDonationComplete(responseId: string, requestId?: string) {
+    // requestId is needed for the backend route: /hospital/requests/:id/donors/:responseId/complete
+    // If not provided, we need to look it up. For now require it.
+    const reqId = requestId || 'unknown';
+    const res: any = await this.request('PATCH', `/hospital/requests/${reqId}/donors/${responseId}/complete`);
+    return { success: true, ...res };
+  }
+
+  async markDonorNoShow(responseId: string, requestId?: string) {
+    const reqId = requestId || 'unknown';
+    const res: any = await this.request('PATCH', `/hospital/requests/${reqId}/donors/${responseId}/no-show`);
+    return { success: true, ...res };
+  }
+
+  async submitDonorFeedback(responseId: string, rating: number, feedback: string, requestId?: string) {
+    const reqId = requestId || 'unknown';
+    const res: any = await this.request('POST', `/hospital/requests/${reqId}/donors/${responseId}/rating`, { rating, feedback });
+    return { success: true, ...res };
+  }
+
+  async getSurplusBloodListings() {
+    const res: any = await this.request('GET', '/hospital/surplus');
+    return res.data || [];
+  }
+
+  async publishSurplusBlood(bloodGroup: BloodGroup, unitsAvailable: number, hoursValid: number) {
+    const res: any = await this.request('POST', '/hospital/surplus', {
       bloodGroup,
       unitsAvailable,
-      expiresAt: new Date(Date.now() + hoursValid * 60 * 60 * 1000).toISOString(),
-      isClaimed: false,
-      createdAt: new Date().toISOString(),
+      expiresInHours: hoursValid,
+    });
+    return res.data || res;
+  }
+
+  async claimSurplusBlood(surplusId: string) {
+    const res: any = await this.request('PATCH', `/hospital/surplus/${surplusId}/claim`);
+    return { success: true, ...res };
+  }
+
+  // ─── Admin Portal Methods ──────────────────────────────
+
+  async getAdminAnalytics() {
+    const res: any = await this.request('GET', '/admin/analytics/overview');
+    const data = res.data || res;
+    // Transform to the shape the dashboard expects
+    return {
+      kpis: data,
+      demandByGroup: data.demandByGroup || {},
+      recentActivity: data.recentActivity || [],
     };
-
-    this.surplus.unshift(newSurplus);
-    this.log('surplus.published', 'hospital_surplus', newSurplus.id, { bloodGroup, unitsAvailable });
-    this.persist();
-    return this.delay(newSurplus);
   }
 
-  claimSurplusBlood(surplusId: string) {
-    if (!this.activeUser || this.activeUser.role !== 'hospital') throw new Error('Unauthorized');
-    this.surplus = this.surplus.map(s => {
-      if (s.id === surplusId) {
-        this.log('surplus.claimed', 'hospital_surplus', surplusId, { claimedBy: this.activeUser!.id });
-        return { ...s, isClaimed: true, claimedBy: this.activeUser!.id };
-      }
-      return s;
+  async getDonorsAdminList() {
+    const res: any = await this.request('GET', '/admin/donors?limit=50');
+    return res.data || [];
+  }
+
+  async getHospitalsAdminList() {
+    const res: any = await this.request('GET', '/admin/hospitals?limit=50');
+    return res.data || [];
+  }
+
+  async verifyHospital(hospitalId: string) {
+    const res: any = await this.request('PATCH', `/admin/hospitals/${hospitalId}/verify`);
+    return { success: true, ...res };
+  }
+
+  async blacklistDonor(donorId: string, blacklist: boolean) {
+    const endpoint = blacklist
+      ? `/admin/donors/${donorId}/blacklist`
+      : `/admin/donors/${donorId}/unblacklist`;
+    const res: any = await this.request('PATCH', endpoint);
+    return { success: true, ...res };
+  }
+
+  async blacklistHospital(hospitalId: string, blacklist: boolean) {
+    const endpoint = blacklist
+      ? `/admin/hospitals/${hospitalId}/blacklist`
+      : `/admin/hospitals/${hospitalId}/unblacklist`;
+    const res: any = await this.request('PATCH', endpoint);
+    return { success: true, ...res };
+  }
+
+  async getAuditLogs() {
+    const res: any = await this.request('GET', '/admin/audit-logs?limit=50');
+    return res.data || [];
+  }
+
+  async broadcastAnnouncement(title: string, message: string, targets: 'all' | 'donors' | 'hospitals') {
+    const res: any = await this.request('POST', '/admin/broadcast', {
+      title,
+      body: message,
+      filters: { role: targets === 'hospitals' ? 'all' : targets === 'donors' ? 'donor' : 'all' },
     });
-    this.persist();
-    return this.delay({ success: true });
-  }
-
-  // --- Admin Portal Methods ---
-  getAdminAnalytics() {
-    const totalDonors = this.donors.length;
-    const totalHospitals = this.hospitals.length;
-    const totalRequestsCount = this.requests.length;
-    const completedDonationsCount = this.responses.filter(r => r.status === 'donated').length;
-    const criticalRequestsCount = this.requests.filter(r => r.priority === 'critical').length;
-    
-    // Group requests by blood group
-    const demandByGroup: Record<string, number> = {};
-    this.requests.forEach(r => {
-      demandByGroup[r.bloodGroup] = (demandByGroup[r.bloodGroup] || 0) + r.unitsRequired;
-    });
-
-    return this.delay({
-      kpis: {
-        totalDonors,
-        totalHospitals,
-        totalRequests: totalRequestsCount,
-        completedDonations: completedDonationsCount,
-        criticalRequests: criticalRequestsCount,
-        averageTrustScore: parseFloat((this.donors.reduce((acc, d) => acc + d.trustScore, 0) / totalDonors).toFixed(1)),
-      },
-      demandByGroup,
-      recentActivity: this.auditLogs.slice(0, 10),
-    });
-  }
-
-  getDonorsAdminList() {
-    return this.delay(this.donors);
-  }
-
-  getHospitalsAdminList() {
-    return this.delay(this.hospitals);
-  }
-
-  verifyHospital(hospitalId: string) {
-    this.hospitals = this.hospitals.map(h => {
-      if (h.id === hospitalId) {
-        this.log('admin.verify_hospital', 'hospitals', hospitalId);
-        return { ...h, isVerified: true };
-      }
-      return h;
-    });
-    this.persist();
-    return this.delay({ success: true });
-  }
-
-  blacklistDonor(donorId: string, blacklist: boolean) {
-    this.donors = this.donors.map(d => {
-      if (d.id === donorId) {
-        this.log(blacklist ? 'admin.blacklist_donor' : 'admin.unblacklist_donor', 'donors', donorId);
-        return { ...d, isBlacklisted: blacklist };
-      }
-      return d;
-    });
-    this.persist();
-    return this.delay({ success: true });
-  }
-
-  blacklistHospital(hospitalId: string, blacklist: boolean) {
-    this.hospitals = this.hospitals.map(h => {
-      if (h.id === hospitalId) {
-        this.log(blacklist ? 'admin.blacklist_hospital' : 'admin.unblacklist_hospital', 'hospitals', hospitalId);
-        return { ...h, isBlacklisted: blacklist, isActive: !blacklist } as any;
-      }
-      return h;
-    });
-    this.persist();
-    return this.delay({ success: true });
-  }
-
-  getAuditLogs() {
-    return this.delay(this.auditLogs);
-  }
-
-  broadcastAnnouncement(title: string, message: string, targets: 'all' | 'donors' | 'hospitals') {
-    this.log('admin.broadcast_announcement', 'broadcast', 'system', { title, message, targets });
-    console.log(`[Push Notification Broadcaster] Sending broadcast to ${targets.toUpperCase()}: "${title}" - ${message}`);
-    return this.delay({ success: true });
-  }
-
-  // --- Compatibility Helper ---
-  private getCompatibleDonorGroups(recipientGroup: BloodGroup): BloodGroup[] {
-    const compatibilityMap: Record<BloodGroup, BloodGroup[]> = {
-      'O-': ['O-'],
-      'O+': ['O-', 'O+'],
-      'A-': ['O-', 'A-'],
-      'A+': ['O-', 'O+', 'A-', 'A+'],
-      'B-': ['O-', 'B-'],
-      'B+': ['O-', 'O+', 'B-', 'B+'],
-      'AB-': ['O-', 'A-', 'B-', 'AB-'],
-      'AB+': ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'],
-    };
-    return compatibilityMap[recipientGroup] || [];
+    return { success: true, ...res };
   }
 }
 

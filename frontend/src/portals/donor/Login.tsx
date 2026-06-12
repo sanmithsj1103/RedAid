@@ -37,10 +37,23 @@ export const DonorLogin: React.FC = () => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
+<<<<<<< HEAD
       await api.login('+1 (555) 012-3456', 'donor');
       navigate('/donor/dashboard');
     } catch (err) {
       setError('Google Sign In failed.');
+=======
+      const res = await api.verifyOtp(phone, otp);
+      if (res.isNewUser) {
+        // New user — redirect to registration
+        navigate('/donor/register');
+      } else {
+        // Existing user — session already established
+        navigate('/donor/dashboard');
+      }
+    } catch (err: any) {
+      setError(err.message || 'OTP verification failed');
+>>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
     } finally {
       setLoading(false);
     }
@@ -70,6 +83,7 @@ export const DonorLogin: React.FC = () => {
           </div>
         )}
 
+<<<<<<< HEAD
         {/* Login Credentials Form */}
         <form onSubmit={handleLogin} className="space-y-4">
           
@@ -91,6 +105,33 @@ export const DonorLogin: React.FC = () => {
               Test Donor: <span className="text-[#ba1a1a] font-black">+1 (555) 012-3456</span>
             </p>
           </div>
+=======
+        {step === 1 ? (
+          /* Step 1: Send OTP */
+          <form onSubmit={handleSendOtp} className="space-y-4">
+            <div>
+              <label htmlFor="phone" className="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider">
+                Mobile Number
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Phone className="h-4.5 w-4.5 text-gray-400" />
+                </div>
+                <input
+                  id="phone"
+                  type="tel"
+                  required
+                  placeholder="e.g., +919876543210"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="block w-full pl-10 pr-4 py-3 bg-white border border-surface-container-high rounded-xl text-sm focus:outline-none focus:border-primary/50 transition-colors"
+                />
+              </div>
+              <p className="text-[10px] text-on-surface-variant mt-1.5 leading-normal">
+                Enter your registered phone number in <span className="font-semibold text-primary">+91XXXXXXXXXX</span> format.
+              </p>
+            </div>
+>>>>>>> 385aa2671327c2bf0c83f743dca091d87ce46fa4
 
           {/* Password */}
           <div className="space-y-1.5">

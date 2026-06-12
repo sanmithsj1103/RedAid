@@ -18,8 +18,8 @@ export const AdminLogin: React.FC = () => {
     setError('');
     setLoading(true);
     try {
-      // Simulate admin login
-      await api.login('admin', 'admin');
+      // Authenticate admin via backend
+      await api.login(password, 'admin', password);
       navigate('/admin');
     } catch (err: any) {
       setError(err.message || 'Access token verification failed.');
