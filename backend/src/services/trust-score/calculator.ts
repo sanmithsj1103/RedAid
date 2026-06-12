@@ -15,9 +15,7 @@ export function computeTrustScore(donor: {
 
   const donationsComponent = Math.min(donor.total_donations / 10, 1) * 100;
 
-  const responseRate = donor.total_responses === 0
-    ? 100
-    : (donor.total_accepted / donor.total_responses) * 100;
+  const responseRate = (donor.total_accepted / donor.total_responses) * 100;
 
   const reliabilityRate = donor.total_accepted === 0
     ? 100

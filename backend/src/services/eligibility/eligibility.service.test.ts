@@ -32,6 +32,11 @@ describe('checkDonorEligibility', () => {
     expect(status).toEqual({ eligible: false, reason: 'blacklisted' });
   });
 
+  it('should return ineligible if suspended', () => {
+    const status = checkDonorEligibility({ ...baseDonor, is_suspended: true } as any);
+    expect(status).toEqual({ eligible: false, reason: 'suspended' });
+  });
+
   it('should return too_young if age is under 18', () => {
     // 17 years old
     const status = checkDonorEligibility({ ...baseDonor, date_of_birth: '2009-06-11' });

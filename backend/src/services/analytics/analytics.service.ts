@@ -110,7 +110,7 @@ export async function getOverviewKPIs(
 
     const { data: unitsData } = await sumQuery;
     const unitsFulfilled = (unitsData ?? []).reduce(
-      (sum, row) => sum + (row.units_fulfilled ?? 0),
+      (sum: number, row: { units_fulfilled?: number }) => sum + (row.units_fulfilled ?? 0),
       0
     );
 

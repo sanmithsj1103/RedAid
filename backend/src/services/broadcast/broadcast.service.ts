@@ -40,7 +40,7 @@ export async function sendBroadcast(
       throw new Error(`Failed to query donor FCM tokens: ${error.message}`);
     }
 
-    const tokens = (donors ?? []).map((d) => d.fcm_token) as string[];
+    const tokens = (donors ?? []).map((d: { fcm_token?: string }) => d.fcm_token) as string[];
 
     if (tokens.length === 0) {
       logger.info('No matching device tokens found for broadcast');

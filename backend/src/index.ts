@@ -1,8 +1,13 @@
+import { initSentry } from './config/sentry.js';
+// Initialize Sentry before other modules
+initSentry();
+
 import express from 'express';
 import { createServer } from 'http';
 import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import * as Sentry from '@sentry/node';
 
 import { apiLimiter } from './middleware/rate-limiter.js';
 import { globalErrorHandler } from './middleware/error-handler.js';
@@ -80,8 +85,11 @@ app.use((_req, res) => {
 });
 
 // ────────────────────────────────────────────────────────
-// Global Error Handler
+// Sentry & Global Error Handler
 // ────────────────────────────────────────────────────────
+if (process.env['SENTRY_DSN']) {
+  Sentry.setupExpressErrorHandler(app);
+}
 app.use(globalErrorHandler);
 
 // ────────────────────────────────────────────────────────

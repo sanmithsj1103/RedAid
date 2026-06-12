@@ -15,6 +15,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@sentry/node": "^10.57.0",
     "@supabase/supabase-js": "^2.49.0",
     "bullmq": "^5.30.0",
     "cookie-parser": "^1.4.7",
@@ -43,6 +44,7 @@
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
+    "@vitest/coverage-v8": "^2.1.9",
     "eslint": "^9.16.0",
     "supertest": "^7.0.0",
     "tsx": "^4.19.0",

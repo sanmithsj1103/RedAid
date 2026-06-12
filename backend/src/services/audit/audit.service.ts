@@ -24,7 +24,7 @@ export interface AuditLogEntry {
   entity_type?: string;
   entity_id?: string;
   metadata?: Record<string, unknown>;
-  ip_address?: string;
+  ip_address?: string | string[];
 }
 
 /**
@@ -42,7 +42,7 @@ export async function logAuditEvent(entry: AuditLogEntry): Promise<void> {
       entity_type: entry.entity_type ?? null,
       entity_id: entry.entity_id ?? null,
       metadata: entry.metadata ?? null,
-      ip_address: entry.ip_address ?? null,
+      ip_address: (Array.isArray(entry.ip_address) ? entry.ip_address[0] : entry.ip_address) ?? null,
     });
 
     if (error) {

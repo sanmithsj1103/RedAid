@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import { AppError } from '../utils/app-error.js';
 import { logAuditEvent } from '../services/audit/audit.service.js';
-import { emitToHospital, emitToDonor } from '../config/socket.js';
+import { emitToHospital } from '../config/socket.js';
 import { notificationQueue } from '../services/notification/notification.service.js';
 import {
   getDonorById,

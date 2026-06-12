@@ -8,10 +8,11 @@ import { supabaseAdmin } from '../config/supabase.js';
 import { logAuditEvent } from '../services/audit/audit.service.js';
 import { getOverviewKPIs, getDemandZones } from '../services/analytics/analytics.service.js';
 import { sendBroadcast } from '../services/broadcast/broadcast.service.js';
-import { checkAndFlagNoShowFraud } from '../services/fraud/fraud.service.js';
+// Fraud service is invoked via cron, not directly in routes
 import { AppError } from '../utils/app-error.js';
 
 const router = Router();
+
 
 // Protect all routes with admin authentication
 router.use(requireAuth, requireRole('admin'));
@@ -136,7 +137,7 @@ router.patch('/donors/:id/verify', async (req: Request, res: Response, next: Nex
       actor_id: req.user!.id,
       actor_role: 'admin',
       entity_type: 'donor',
-      entity_id: id,
+      entity_id: id as string,
       ip_address: req.ip,
     });
 
@@ -164,7 +165,7 @@ router.patch('/donors/:id/suspend', async (req: Request, res: Response, next: Ne
       actor_id: req.user!.id,
       actor_role: 'admin',
       entity_type: 'donor',
-      entity_id: id,
+      entity_id: id as string,
       ip_address: req.ip,
     });
 
@@ -192,7 +193,7 @@ router.patch('/donors/:id/unsuspend', async (req: Request, res: Response, next: 
       actor_id: req.user!.id,
       actor_role: 'admin',
       entity_type: 'donor',
-      entity_id: id,
+      entity_id: id as string,
       ip_address: req.ip,
     });
 
@@ -220,7 +221,7 @@ router.patch('/donors/:id/blacklist', async (req: Request, res: Response, next: 
       actor_id: req.user!.id,
       actor_role: 'admin',
       entity_type: 'donor',
-      entity_id: id,
+      entity_id: id as string,
       ip_address: req.ip,
     });
 
@@ -248,7 +249,7 @@ router.patch('/donors/:id/unblacklist', async (req: Request, res: Response, next
       actor_id: req.user!.id,
       actor_role: 'admin',
       entity_type: 'donor',
-      entity_id: id,
+      entity_id: id as string,
       ip_address: req.ip,
     });
 
@@ -358,7 +359,7 @@ router.patch('/hospitals/:id/verify', async (req: Request, res: Response, next: 
       actor_id: req.user!.id,
       actor_role: 'admin',
       entity_type: 'hospital',
-      entity_id: id,
+      entity_id: id as string,
       ip_address: req.ip,
     });
 
@@ -386,7 +387,7 @@ router.patch('/hospitals/:id/suspend', async (req: Request, res: Response, next:
       actor_id: req.user!.id,
       actor_role: 'admin',
       entity_type: 'hospital',
-      entity_id: id,
+      entity_id: id as string,
       ip_address: req.ip,
     });
 
@@ -414,7 +415,7 @@ router.patch('/hospitals/:id/unsuspend', async (req: Request, res: Response, nex
       actor_id: req.user!.id,
       actor_role: 'admin',
       entity_type: 'hospital',
-      entity_id: id,
+      entity_id: id as string,
       ip_address: req.ip,
     });
 
@@ -442,7 +443,7 @@ router.patch('/hospitals/:id/blacklist', async (req: Request, res: Response, nex
       actor_id: req.user!.id,
       actor_role: 'admin',
       entity_type: 'hospital',
-      entity_id: id,
+      entity_id: id as string,
       ip_address: req.ip,
     });
 
@@ -470,7 +471,7 @@ router.patch('/hospitals/:id/unblacklist', async (req: Request, res: Response, n
       actor_id: req.user!.id,
       actor_role: 'admin',
       entity_type: 'hospital',
-      entity_id: id,
+      entity_id: id as string,
       ip_address: req.ip,
     });
 
@@ -547,7 +548,17 @@ router.get('/fraud/no-shows', async (_req: Request, res: Response, next: NextFun
       noShowCounts[r.donor_id] = (noShowCounts[r.donor_id] ?? 0) + 1;
     }
 
-    const fraudDonors = (donors ?? [])
+    interface FraudDonorRow {
+      id: string;
+      full_name: string;
+      phone: string;
+      blood_group: string;
+      trust_score: number;
+      total_accepted: number;
+      is_suspended: boolean;
+    }
+
+    const fraudDonors = (donors as FraudDonorRow[] ?? [])
       .map((donor) => {
         const noShows = noShowCounts[donor.id] ?? 0;
         const rate = donor.total_accepted > 0 ? noShows / donor.total_accepted : 0;
